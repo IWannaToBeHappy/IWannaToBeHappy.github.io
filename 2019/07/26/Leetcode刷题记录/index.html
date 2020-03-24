@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="算法," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="种菜园" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="因为官方已经有足够的正常答案，所以仅记录自己想的和官方不一样的思路 1081.不同字符的最小子序列 题目描述 返回字符串 text 中按字典序排列最小的子序列，该子序列包含 text 中所有不同字符一次。 示例 1： 12输入：&quot;cdadabcc&quot;输出：&quot;adbc&quot;       示例 2：   12输入：&quot;abcd&quot;输出：&quot;ab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode刷题记录">
+<meta property="og:url" content="https://iwannatobehappy.github.io/2019/07/26/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="种菜园">
+<meta property="og:description" content="因为官方已经有足够的正常答案，所以仅记录自己想的和官方不一样的思路 1081.不同字符的最小子序列 题目描述 返回字符串 text 中按字典序排列最小的子序列，该子序列包含 text 中所有不同字符一次。 示例 1： 12输入：&quot;cdadabcc&quot;输出：&quot;adbc&quot;       示例 2：   12输入：&quot;abcd&quot;输出：&quot;ab">
+<meta property="article:published_time" content="2019-07-26T07:25:54.000Z">
+<meta property="article:modified_time" content="2019-07-26T07:50:07.428Z">
+<meta property="article:author" content="陈潇">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iwannatobehappy.github.io/2019/07/26/Leetcode刷题记录/"/>
+
+
+
+
+
+  <title>Leetcode刷题记录 | 种菜园</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">种菜园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://iwannatobehappy.github.io/2019/07/26/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈潇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="种菜园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Leetcode刷题记录</h1>
+        
+
+        <div class="post-meta">
+		  
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-26T15:25:54+08:00">
+                2019-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/26/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/26/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  868
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为官方已经有足够的正常答案，所以仅记录自己想的和官方不一样的思路</p>
+<h3 id="1081-不同字符的最小子序列"><a href="#1081-不同字符的最小子序列" class="headerlink" title="1081.不同字符的最小子序列"></a>1081.不同字符的最小子序列</h3><ul>
+<li><p><a href="https://leetcode-cn.com/problems/smallest-subsequence-of-distinct-characters" target="_blank" rel="noopener">题目描述</a></p>
+<p>返回字符串 text 中按字典序排列最小的子序列，该子序列包含 text 中所有不同字符一次。</p>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：&quot;cdadabcc&quot;</span><br><span class="line">输出：&quot;adbc&quot;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<p>  <strong>示例 2：</strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：&quot;abcd&quot;</span><br><span class="line">输出：&quot;abcd&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p>  <strong>示例 3：</strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：&quot;ecbacba&quot;</span><br><span class="line">输出：&quot;eacb&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p>  <strong>示例 4：</strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：&quot;leetcode&quot;</span><br><span class="line">输出：&quot;letcod&quot;</span><br></pre></td></tr></table></figure>
+
+<p>  <strong>提示：</strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 &lt;&#x3D; text.length &lt;&#x3D; 1000</span><br><span class="line">text 由小写英文字母组成</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>解法一</p>
+<p>贪心算法，也是官方的标答，利用堆栈不断向后搜索，比较简单，直接看代码就行，复杂度O(n^2)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">smallestSubsequence</span><span class="params">(self, text)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type text: str</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i, c <span class="keyword">in</span> enumerate(text):</span><br><span class="line">            <span class="keyword">if</span> c <span class="keyword">in</span> stack:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">while</span> stack <span class="keyword">and</span> stack[<span class="number">-1</span>] &gt; c <span class="keyword">and</span> text.find(stack[<span class="number">-1</span>], i) != <span class="number">-1</span>:</span><br><span class="line">                stack.pop()</span><br><span class="line">            </span><br><span class="line">            stack.append(c)</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> <span class="string">''</span>.join(stack)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>解法二</p>
+<p>遍历一次可以得到所有字母的位置，我们只需要维护一个核心：下一个想看到的字母，就可以通过再遍历一次的方法得到答案了。</p>
+<p>下一个想看到的字母有两个特性：</p>
+<ul>
+<li>他的位置一定要小于等于某一个字母最后出现的位置</li>
+<li>在满足上一条件的同时，他的字典序要足够小</li>
+</ul>
+<p>所以我们只需要能根据第一次遍历的结果算出：所有字母最后出现的位置，以及对某一字母来说，从第i位开始第一次出现的位置，就可以确保第一个特性，复杂度与n无关。</p>
+<p><code>position[sortedkeys[mina]][0]&gt;min([x[-1] for x in position.values()]</code></p>
+<p>其中<code>min([x[-1] for x in position.values()]</code>也是可以存储起来并在遍历过程中维护的。</p>
+<p>第二个条件就更好满足了，只需要将所有出现过的字母排个序，找的时候从小到大判断其是否满足第一个条件就好，复杂度同样与n无关。</p>
+<p><code>sortedkeys=sorted(position.keys())</code></p>
+<p>最终复杂度O(n)，代码如下，明显还有很大优化空间：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">smallestSubsequence</span><span class="params">(self, text)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type text: str</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> text==<span class="string">""</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">""</span></span><br><span class="line">        index=&#123;<span class="string">'a'</span>:<span class="number">0</span>,<span class="string">'b'</span>:<span class="number">1</span>,<span class="string">'c'</span>:<span class="number">2</span>,<span class="string">'d'</span>:<span class="number">3</span>,<span class="string">'e'</span>:<span class="number">4</span>,<span class="string">'f'</span>:<span class="number">5</span>,<span class="string">'g'</span>:<span class="number">6</span>,<span class="string">'h'</span>:<span class="number">7</span>,<span class="string">'i'</span>:<span class="number">8</span>,<span class="string">'j'</span>:<span class="number">9</span>,<span class="string">'k'</span>:<span class="number">10</span>,<span class="string">'l'</span>:<span class="number">11</span>,<span class="string">'m'</span>:<span class="number">12</span>,<span class="string">'n'</span>:<span class="number">13</span>,<span class="string">'o'</span>:<span class="number">14</span>,<span class="string">'p'</span>:<span class="number">15</span>,<span class="string">'q'</span>:<span class="number">16</span>,<span class="string">'r'</span>:<span class="number">17</span>,<span class="string">'s'</span>:<span class="number">18</span>,<span class="string">'t'</span>:<span class="number">19</span>,<span class="string">'u'</span>:<span class="number">20</span>,<span class="string">'v'</span>:<span class="number">21</span>,<span class="string">'w'</span>:<span class="number">22</span>,<span class="string">'x'</span>:<span class="number">23</span>,<span class="string">'y'</span>:<span class="number">24</span>,<span class="string">'z'</span>:<span class="number">25</span>&#125;</span><br><span class="line">        position=&#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(text)):</span><br><span class="line">            <span class="keyword">if</span> index[text[i]] <span class="keyword">not</span> <span class="keyword">in</span> position:</span><br><span class="line">                position[index[text[i]]]=[i] <span class="comment"># 记录每一字母出现的位置 dict&#123;字母对应数字int:[下标int]&#125;</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                position[index[text[i]]].append(i)</span><br><span class="line">        </span><br><span class="line">        sortedkeys=sorted(position.keys()) <span class="comment"># 将包含的字母从小到大排序</span></span><br><span class="line">        mina=<span class="number">0</span> <span class="comment"># 下一个想要寻找的字母的下标</span></span><br><span class="line">        <span class="keyword">while</span> position[sortedkeys[mina]][<span class="number">0</span>]&gt;min([x[<span class="number">-1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> position.values()]): <span class="comment"># 如果下一个要找的字母下一次出现的位置在某一字母最后一次出现的后面，则更改变大下一要找的字母</span></span><br><span class="line">            mina+=<span class="number">1</span></span><br><span class="line">        re=<span class="string">""</span></span><br><span class="line">        i=<span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">            <span class="keyword">if</span>(index[text[i]]==sortedkeys[mina]): <span class="comment"># 找到了</span></span><br><span class="line">                re+=text[i]</span><br><span class="line">                position.pop(index[text[i]]) <span class="comment"># 修改position,不在需要该类字母位置</span></span><br><span class="line">                <span class="keyword">if</span> position==&#123;&#125;:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                sortedkeys.pop(mina) <span class="comment"># 修改sortedkeys,不在需要寻找该类字母</span></span><br><span class="line">                mina=<span class="number">0</span> <span class="comment"># 修改mina,确定下一要找的字母</span></span><br><span class="line">                <span class="keyword">while</span> position[sortedkeys[mina]][<span class="number">0</span>]&gt;min([x[<span class="number">-1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> position.values()]):</span><br><span class="line">                    mina+=<span class="number">1</span></span><br><span class="line">                i+=<span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> index[text[i]] <span class="keyword">in</span> position:</span><br><span class="line">                    position[index[text[i]]].pop(<span class="number">0</span>)   </span><br><span class="line">                i+=<span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> re</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/09/%E6%9C%A8%E9%A9%AC%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8/" rel="next" title="木马逆向分析入门">
+                <i class="fa fa-chevron-left"></i> 木马逆向分析入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/13/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E4%B8%8E%E7%BB%93%E6%9E%84%E4%BD%93%E5%8D%A0%E6%8D%AE%E5%86%85%E5%AD%98/" rel="prev" title="内存对齐与结构体占据内存">
+                内存对齐与结构体占据内存 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="陈潇" />
+            
+              <p class="site-author-name" itemprop="name">陈潇</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/iwannatobehappy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://845895322@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1081-不同字符的最小子序列"><span class="nav-number">1.</span> <span class="nav-text">1081.不同字符的最小子序列</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈潇</span>
+
+  
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'oXGA1XzMIhhs9x4yNbf1DOge-gzGzoHsz',
+        appKey: 'JYRNnDQ1kh2RA7V2MYsSnRVR',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

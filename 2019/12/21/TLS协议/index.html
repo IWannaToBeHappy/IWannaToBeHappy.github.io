@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="协议," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="种菜园" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="TLS（Transportation Layer Security）是一种传输层协议，他的前身是由Netscape公司设计的SSL（Secure Socket Layer），用于web的安全传输。后被IETF规范化为TLS。TLS共由5个子协议组成，分别为Handshake protocol、ChangeCipherSpec、Alert protocol、Application data和TLS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TLS协议">
+<meta property="og:url" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="种菜园">
+<meta property="og:description" content="TLS（Transportation Layer Security）是一种传输层协议，他的前身是由Netscape公司设计的SSL（Secure Socket Layer），用于web的安全传输。后被IETF规范化为TLS。TLS共由5个子协议组成，分别为Handshake protocol、ChangeCipherSpec、Alert protocol、Application data和TLS">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/handshake%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/handshake%E5%B0%81%E8%A3%85%E5%BD%A2%E5%BC%8F.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/client_hello%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/sever_hello%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/certificate%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/SeverKeyExchange%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/clientKeyExchange%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/ChangeCipherSpec%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/%E5%AF%86%E9%92%A5%E7%94%9F%E6%88%90%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/SessionID%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/sessionticket.png">
+<meta property="article:published_time" content="2019-12-21T04:48:20.000Z">
+<meta property="article:modified_time" content="2019-12-29T06:30:33.625Z">
+<meta property="article:author" content="陈潇">
+<meta property="article:tag" content="协议">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iwannatobehappy.github.io/2019/12/21/TLS协议/"/>
+
+
+
+
+
+  <title>TLS协议 | 种菜园</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">种菜园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://iwannatobehappy.github.io/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈潇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="种菜园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TLS协议</h1>
+        
+
+        <div class="post-meta">
+		  
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-21T12:48:20+08:00">
+                2019-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.1k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TLS（Transportation Layer Security）是一种传输层协议，他的前身是由Netscape公司设计的SSL（Secure Socket Layer），用于web的安全传输。后被IETF规范化为TLS。<br>TLS共由5个子协议组成，分别为<strong>Handshake protocol</strong>、<strong>ChangeCipherSpec</strong>、<strong>Alert protocol</strong>、<strong>Application data</strong>和<strong>TLS Record Protocol</strong>。他们的关系如下图所示：<br><img src="%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84.png" alt=""></p>
+<h1 id="TLS-Record-Protocol"><a href="#TLS-Record-Protocol" class="headerlink" title="TLS Record Protocol"></a>TLS Record Protocol</h1><p>TLS记录协议基于由<strong>握手协议</strong>协商确定的安全参数对应用数据传输提供<strong>保密性</strong>和<strong>完整性</strong>保护。</p>
+<h2 id="功能目标"><a href="#功能目标" class="headerlink" title="功能目标"></a>功能目标</h2><ul>
+<li>消息传输<br>记录协议传输由上层协议（如handshake protocol）提交给它的数据缓冲区，如果缓冲区超过长度限制（2^14），则需要分片。属于<strong>同一协议</strong>的小缓冲区也可以组合成单个记录。</li>
+<li>加密及完整性验证</li>
+<li>压缩<br>设计上，加密前应压缩以提高效率，实践中基本没有压缩……</li>
+<li>拓展性</li>
+</ul>
+<h2 id="封装过程"><a href="#封装过程" class="headerlink" title="封装过程"></a>封装过程</h2><p>分装总流程分为分片、压缩、加密与消息认证。</p>
+<h3 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//分片结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    ContentType type;<span class="comment">//1 byte</span></span><br><span class="line">    ProtocolVersion version;<span class="comment">//1 byte major,1 byte minor</span></span><br><span class="line">    uint16 length;<span class="comment">//2 bytes</span></span><br><span class="line">opaque fragment[TLSPlaintext.length];<span class="comment">//明文数据分片</span></span><br><span class="line">&#125;TLSPlaintext;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ContentType显示了分片所属协议</span></span><br><span class="line"><span class="keyword">enum</span>&#123;</span><br><span class="line">    change_cipher_spec(<span class="number">20</span>),</span><br><span class="line">    alert(<span class="number">21</span>),</span><br><span class="line">    handshake(<span class="number">22</span>),</span><br><span class="line">    application_data(<span class="number">23</span>),</span><br><span class="line">    (<span class="number">255</span>)</span><br><span class="line">&#125; ContentType</span><br><span class="line"></span><br><span class="line"><span class="comment">//ProtocolVersion显示了版本号,其可能的数值如下表</span></span><br><span class="line"><span class="comment">//Versionvalues Dec Hex</span></span><br><span class="line"><span class="comment">//SSL3.0        3,0 0x0300</span></span><br><span class="line"><span class="comment">//TLS1.0        3,1 0x0301</span></span><br><span class="line"><span class="comment">//TLS1.1        3,2 0x0302</span></span><br><span class="line"><span class="comment">//TLS1.2        3,3 0x0303</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint8 major;</span><br><span class="line">    uint8 minor; </span><br><span class="line">&#125; ProtocolVersion;</span><br></pre></td></tr></table></figure>
+
+<h3 id="压缩"><a href="#压缩" class="headerlink" title="压缩"></a>压缩</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//压缩后分片结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    ContentType type;<span class="comment">//1 byte</span></span><br><span class="line">    ProtocolVersion version;<span class="comment">//1 byte major,1 byte minor</span></span><br><span class="line">    uint16 length;<span class="comment">//2 bytes</span></span><br><span class="line">opaque fragment[TLSCompressed.length];<span class="comment">//压缩数据分片</span></span><br><span class="line">&#125;TLSPlaintext;</span><br></pre></td></tr></table></figure>
+
+<h3 id="安全处理"><a href="#安全处理" class="headerlink" title="安全处理"></a>安全处理</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    ContentTypetype;</span><br><span class="line">    ProtocolVersionversion;</span><br><span class="line">    uint16 length; </span><br><span class="line">    select </span><br><span class="line">    (SecurityParameters.cipher_type) &#123; </span><br><span class="line">        <span class="keyword">case</span> stream: GenericStreamCipher; </span><br><span class="line">        <span class="keyword">case</span> block:  GenericBlockCipher; </span><br><span class="line">        <span class="keyword">case</span> aead:   GenericAEADCipher; </span><br><span class="line">    &#125; fragment; </span><br><span class="line">&#125; TLSCiphertext;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span> </span><br><span class="line">    opaque IV[SecurityParameters.record_iv_length];<span class="comment">//16bytes 初始化向量</span></span><br><span class="line">    block-ciphered <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">        opaque content[TLSCompressed.length]; <span class="comment">//压缩后的数据分片</span></span><br><span class="line">        opaque MAC[SecurityParameters.mac_length];<span class="comment">//消息认证码</span></span><br><span class="line">        uint8 padding[GenericBlockCipher.padding_length]; <span class="comment">//填充</span></span><br><span class="line">        uint8 padding_length;<span class="comment">//1byte 填充长度</span></span><br><span class="line">    &#125;;<span class="comment">//密文</span></span><br><span class="line">&#125; GenericBlockCipher;</span><br></pre></td></tr></table></figure>
+
+<h1 id="TLS-Handshake-Protocol"><a href="#TLS-Handshake-Protocol" class="headerlink" title="TLS Handshake Protocol"></a>TLS Handshake Protocol</h1><p>TLS握手协议协商记录层的安全参数，包括<strong>密码套件</strong>、<strong>Pre master secret</strong>和<strong>身份认证</strong></p>
+<h2 id="交换流程"><a href="#交换流程" class="headerlink" title="交换流程"></a>交换流程</h2><p>握手流程如图所示，其中星号代表可选项，方括号表示加密内容，之后会具体解释转换的内容。<br><img src="handshake%E6%B5%81%E7%A8%8B.png" alt=""></p>
+<h2 id="封装过程-1"><a href="#封装过程-1" class="headerlink" title="封装过程"></a>封装过程</h2><p>总体封装过程如图所示，handshake部分前有record层的头部信息包裹。<br><img src="handshake%E5%B0%81%E8%A3%85%E5%BD%A2%E5%BC%8F.png" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    HandshakeType msg_type;    <span class="comment">/* handshake type */</span></span><br><span class="line">    uint24 length;             <span class="comment">/* bytes in message */</span> </span><br><span class="line">    select (HandshakeType) &#123; </span><br><span class="line">        <span class="keyword">case</span> hello_request:       HelloRequest;      </span><br><span class="line">        <span class="keyword">case</span> client_hello:        ClientHello;       </span><br><span class="line">        <span class="keyword">case</span> server_hello:        ServerHello;       </span><br><span class="line">        <span class="keyword">case</span> certificate:         Certificate;       </span><br><span class="line">        <span class="keyword">case</span> server_key_exchange: ServerKeyExchange; </span><br><span class="line">        <span class="keyword">case</span> certificate_request: CertificateRequest;</span><br><span class="line">        <span class="keyword">case</span> server_hello_done:   ServerHelloDone;   </span><br><span class="line">        <span class="keyword">case</span> certificate_verify:  CertificateVerify; </span><br><span class="line">        <span class="keyword">case</span> client_key_exchange: ClientKeyExchange; </span><br><span class="line">        <span class="keyword">case</span> finished:            Finished;          </span><br><span class="line">    &#125; body; </span><br><span class="line">&#125; Handshake;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> &#123; </span><br><span class="line">    hello_request(<span class="number">0</span>), </span><br><span class="line">    client_hello(<span class="number">1</span>), </span><br><span class="line">    server_hello(<span class="number">2</span>), </span><br><span class="line">    certificate(<span class="number">11</span>), </span><br><span class="line">    server_key_exchange(<span class="number">12</span>), </span><br><span class="line">    certificate_request(<span class="number">13</span>), </span><br><span class="line">    server_hello_done(<span class="number">14</span>), </span><br><span class="line">    certificate_verify(<span class="number">15</span>), </span><br><span class="line">    client_key_exchange(<span class="number">16</span>), </span><br><span class="line">    finished(<span class="number">20</span>), </span><br><span class="line">    (<span class="number">255</span>) </span><br><span class="line">&#125; HandshakeType</span><br></pre></td></tr></table></figure>
+<p>下面介绍body内部结构</p>
+<h3 id="HelloRequest"><a href="#HelloRequest" class="headerlink" title="HelloRequest"></a>HelloRequest</h3><p>HelloRequest是一个简单的通知，告诉client应该重新开始一个协商过程。作为响应，client应该在合适的时候发送 ClientHello消息。如果client当前正在协商一个会话，则该消息会被忽略<br>当HandshakeType为HelloRequest时，消息体是<strong>空</strong>的。也就是说，Handshake只占4个字节。</p>
+<h3 id="ClientHello"><a href="#ClientHello" class="headerlink" title="ClientHello;"></a>ClientHello;</h3><p>在一次新的握手流程中，ClientHello消息总是第一条消息。ClientHello消息将客户端支持的功能和首选项发送给服务器。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span> </span><br><span class="line">    ProtocolVersion client_version; </span><br><span class="line">    Random <span class="built_in">random</span>; </span><br><span class="line">    SessionID session_id; </span><br><span class="line">    CipherSuite cipher_suites&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-2</span>&gt;; </span><br><span class="line">    CompressionMethod compression_methods&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;; </span><br><span class="line">    select (extensions_present) &#123; </span><br><span class="line">        <span class="keyword">case</span> <span class="literal">false</span>: </span><br><span class="line">            <span class="class"><span class="keyword">struct</span>&#123;</span>&#125;; </span><br><span class="line">        <span class="keyword">case</span> <span class="literal">true</span>: </span><br><span class="line">            Extension extensions&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;; </span><br><span class="line">    &#125;; </span><br><span class="line">&#125; ClientHello; </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span> </span><br><span class="line">    uint32 gmt_unix_time; </span><br><span class="line">    opaque random_bytes[<span class="number">28</span>]; </span><br><span class="line">&#125; Random;</span><br><span class="line"></span><br><span class="line">opaque SessionID&lt;<span class="number">0.</span><span class="number">.32</span>&gt;;</span><br><span class="line"></span><br><span class="line">uint8 CipherSuite[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span>&#123;null(<span class="number">0</span>), (<span class="number">255</span>)&#125; CompressionMethod;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span> </span><br><span class="line">    ExtensionType extension_type; </span><br><span class="line">    opaque extension_data&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;; </span><br><span class="line">&#125; Extension; </span><br><span class="line"><span class="keyword">enum</span>&#123; </span><br><span class="line">    signature_algorithms(<span class="number">13</span>), (<span class="number">65535</span>) </span><br><span class="line">&#125; ExtensionType;</span><br></pre></td></tr></table></figure>
+<p>使用wireshark，我们可以很明确的看到一个handshake数据包示例<br><img src="client_hello%E7%A4%BA%E4%BE%8B.png" alt=""></p>
+<h3 id="ServerHello"><a href="#ServerHello" class="headerlink" title="ServerHello"></a>ServerHello</h3><p>当服务器收到来自客户端的ClientHello消息后，如果它能够找到一套可以接受的算法（即可以就加密算法等取得协商一致），服务器将发送ServerHello消息来响应客户端的ClientHello消息。如果不能找到一套匹配的算法，则服务器将响应handshake failure alert</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span> </span><br><span class="line">    ProtocolVersionserver_version; </span><br><span class="line">    Random <span class="built_in">random</span>; </span><br><span class="line">    SessionIDsession_id; </span><br><span class="line">    CipherSuite cipher_suite; </span><br><span class="line">    CompressionMethod compression_method; </span><br><span class="line">    select (extensions_present) &#123; </span><br><span class="line">        <span class="keyword">case</span> <span class="literal">false</span>: </span><br><span class="line">            <span class="class"><span class="keyword">struct</span>&#123;</span>&#125;; </span><br><span class="line">        <span class="keyword">case</span> <span class="literal">true</span>: </span><br><span class="line">            Extension extensions&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;; </span><br><span class="line">    &#125;; </span><br><span class="line">&#125; ServerHello;</span><br></pre></td></tr></table></figure>
+<p>使用wireshark，我们可以很明确的看到一个handshake数据包示例<br><img src="sever_hello%E7%A4%BA%E4%BE%8B.png" alt=""></p>
+<h3 id="Certificate"><a href="#Certificate" class="headerlink" title="Certificate"></a>Certificate</h3><p>服务器向客户端发送Certificate消息，使得客户端能够认证服务器的身份。<br>匿名通信的情况下，服务器不需要发送 certificate消息。内容也较为简单，只有长度和证书。<br><img src="certificate%E7%A4%BA%E4%BE%8B.png" alt=""></p>
+<h3 id="ServerKeyExchange"><a href="#ServerKeyExchange" class="headerlink" title="ServerKeyExchange"></a>ServerKeyExchange</h3><p>服务器发送serverCertificate消息后，立即发送ServerKeyExchange消息（如果是匿名协商，则在ServerHello后立即发送该消息）。同时，仅当serverCertificate消息包含的信息不足以让客户端交换一个pre master secret 时，才发送 ServerKeyExchange 消息。比如：DHE_DSS 、 DHE_RSA、DH_anon。而对于密钥交换算法RSA、 DH_DSS 、 DH_RSA ， 如果发送 ServerKeyExchange消息则是非法。<br>内容较为多样，只给出一种示例，具体情况具体分析。<br><img src="SeverKeyExchange%E7%A4%BA%E4%BE%8B.png" alt=""></p>
+<h3 id="CertificateRequest"><a href="#CertificateRequest" class="headerlink" title="CertificateRequest"></a>CertificateRequest</h3><p>服务器使用CertificateRequest消息请求对客户端进行身份验证，其中包含了服务器可以接受的证书类型列表，可接受的CA的列表。结构记不住也就算了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span> </span><br><span class="line">    ClientCertificateType certificate_types&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span><br><span class="line">    DistinguishedName certificate_authorities&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;; </span><br><span class="line">&#125; CertificateRequest;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ServerHelloDone"><a href="#ServerHelloDone" class="headerlink" title="ServerHelloDone"></a>ServerHelloDone</h3><p>服务器发送ServerHelloDone消息来表示ServerHello及相关消息的结束，这些消息用于完成密钥交换，发送该消息后，服务器将等待客户端响应。而客户端收到该消息后，可以继续他的密钥交换阶段。ServerHelloDone消息不包含任何内容。</p>
+<p><strong><em>TLS密码套件</em></strong><br>我们来关注一下握手协议中协商的密码套件内容。<br>TLS涉及到的密码应用有身份认证算法、密钥交换算法、加密算法、MAC算法、PRF和用于Finished消息的散列函数。一套密码套件可以如下表示：<code>TLS_密钥交换算法_认证算法_WITH_对称加密算法_哈希算法</code>，例如：<code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code><br>所有可用的密码套件IANA(The Internet Assigned Numbers Authority,互联网数字分配机构给出，他们大部分被保留或不安全，常用的安全密码套件只有20多个。</p>
+<h3 id="CertificateVerify"><a href="#CertificateVerify" class="headerlink" title="CertificateVerify"></a>CertificateVerify</h3><p>只有服务器向客户端发送CertificateRequest消息的情况下，客户端才会向服务器发送CertificateVerify消息，以向服务器证明自己的确持有客户端证书的私钥。</p>
+<h3 id="ClientKeyExchange"><a href="#ClientKeyExchange" class="headerlink" title="ClientKeyExchange"></a>ClientKeyExchange</h3><p>如果客户端发送了ClientCertificate消息，ClientKeyExchange消息应该在该消息后立即发送。否则，在客户端收到服务器发送的ServerHelloDone后立即发送该消息。结构随使用密码体系变化而变化。下给出一个示例。值得注意的是，在这个示例中展示了record layer如何对同一协议多个小缓冲区组合成单个记录。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span> </span><br><span class="line">    select (KeyExchangeAlgorithm) &#123; </span><br><span class="line">        <span class="keyword">case</span> rsa: </span><br><span class="line">            EncryptedPreMasterSecret; </span><br><span class="line">        <span class="keyword">case</span> dhe_dss: </span><br><span class="line">        <span class="keyword">case</span> dhe_rsa: </span><br><span class="line">        <span class="keyword">case</span> dh_dss: </span><br><span class="line">        <span class="keyword">case</span> dh_rsa: </span><br><span class="line">        <span class="keyword">case</span> dh_anon: </span><br><span class="line">            ClientDiffieHellmanPublic; </span><br><span class="line">    &#125; exchange_keys; </span><br><span class="line">&#125; ClientKeyExchange;</span><br></pre></td></tr></table></figure>
+<p><img src="clientKeyExchange%E7%A4%BA%E4%BE%8B.png" alt=""></p>
+<h3 id="Finished"><a href="#Finished" class="headerlink" title="Finished"></a>Finished</h3><p>发送ChangeCipherSpec来激活已经协商好的密码套件之后，客户端发送Finished消息，表明TLS握手协商完成，相当于告诉服务器“握手结束。”<br>由于已经完成了密码规格切换，因此Finished消息是使用切换后的密码套件来发送的，也就是Finished消息不是以明文方式发送的，而是通过下层的记录协议进行<strong>加密发送</strong>。<br>示例如上个图所示哦（第3个就是Finished消息，但他被加密了）<br>Finished消息的内容采用PRF函数生成，其输入包括：master_secret,finished_label,之前所有handshake消息组合的hash值。<br>服务器可以通过对收到的消息进行验证来确认收到的Finished消息是否正确，从而可以确认握手协议是否正常结束，密码套件的切换是否正确（防止降级攻击——攻击者切换弱密码套件）。</p>
+<h1 id="TLS-ChangeCipherSpec-Protocol"><a href="#TLS-ChangeCipherSpec-Protocol" class="headerlink" title="TLS ChangeCipherSpec Protocol"></a>TLS ChangeCipherSpec Protocol</h1><p>此协议用于发送信号给通信对端，表示要切换到新协商确定的密码规格。<br>内容只占一个字节，如图示例<br><img src="ChangeCipherSpec%E7%A4%BA%E4%BE%8B.png" alt=""></p>
+<h1 id="Alert-Protocol"><a href="#Alert-Protocol" class="headerlink" title="Alert Protocol"></a>Alert Protocol</h1><p>此协议用于传递协议运行过程中出现的警报，Alert消息分两类：警告消息（warning）和致命消息（fatal）。致命消息将导致连接被立即中止，并将与这个连接相关的会话（SessionID）作废，以免这个会话被继续用来建立新的连接。警告消息仅仅是通告对方有关报警信息，不会导致连接的关闭。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span> </span><br><span class="line">    AlertLevellevel; </span><br><span class="line">    AlertDescriptiondescription; <span class="comment">//1byte</span></span><br><span class="line">&#125; Alert;</span><br><span class="line"><span class="keyword">enum</span>&#123; </span><br><span class="line">    warning(<span class="number">1</span>), fatal(<span class="number">2</span>), (<span class="number">255</span>) </span><br><span class="line">&#125; AlertLevel;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Application-Data-Protocol"><a href="#Application-Data-Protocol" class="headerlink" title="Application Data Protocol"></a>Application Data Protocol</h1><p>此协议给record层提供application data用于传输<br>传输内容为加密的应用层数据和MAC消息认证码。</p>
+<h1 id="TLS的密钥生成"><a href="#TLS的密钥生成" class="headerlink" title="TLS的密钥生成"></a>TLS的密钥生成</h1><p>TLS中，需要用到三种密钥：用于消息加密的对称密码密钥、CBC模式的初始化向量、用于消息认证码的密钥。服务端使用的密钥与客户端使用的密钥不同，这代表总共有6组密钥需要生成。<br>pre_master_secret生成master_secret，master_secret生成所有密钥。整个密钥生成流程如下图所示：<br><img src="%E5%AF%86%E9%92%A5%E7%94%9F%E6%88%90%E6%B5%81%E7%A8%8B.png" alt=""></p>
+<h2 id="pre-master-secret"><a href="#pre-master-secret" class="headerlink" title="pre master secret"></a>pre master secret</h2><ul>
+<li>如果采用RSA进行密钥协商，client生成一个随机数，在发送ClientKeyExchange消息时用server的公钥加密，发送给server，最后双方均具有这个秘密，即为 pre_master_secret。</li>
+<li>如果采用DH进行密钥协商，Client在发送ClientKeyExchange消息时，将DH的公开值发送给server。server也会发送一个DH公开值给Client。根据DH算法，最终通信双方获得一个相同的秘密值，即为pre_master_secret。</li>
+</ul>
+<h2 id="master-secret"><a href="#master-secret" class="headerlink" title="master secret"></a>master secret</h2><p><code>master_secret=PRF(pre_master_secret,&quot;master secret“,ClientHello.random+ServerHello.random)[0..47];</code></p>
+<ul>
+<li>pre_master_secret：来自于handshake阶段，client和server协商出的一个秘密数</li>
+<li>“master secret”：一个常量标签字符串，用于表示所生成数据的使用目的</li>
+<li>ClientHello.random：客户端随机数</li>
+<li>ServerHello.random：服务器随机数<br>最终生成48字节的master secret</li>
+</ul>
+<h2 id="PRF"><a href="#PRF" class="headerlink" title="PRF"></a>PRF</h2><p>伪随机数生成器PRF的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PRF(secret, label, seed) = P_&lt;hash&gt;(secret, label + seed)</span><br><span class="line"></span><br><span class="line">P_hash(secret, seed) = HMAC_hash(secret, A(<span class="number">1</span>) + seed) +</span><br><span class="line">                       HMAC_hash(secret, A(<span class="number">2</span>) + seed) +</span><br><span class="line">                       HMAC_hash(secret, A(<span class="number">3</span>) + seed) + ...</span><br><span class="line"></span><br><span class="line">A(<span class="number">0</span>) = seed</span><br><span class="line">A(i) = HMAC_hash(secret, A(i<span class="number">-1</span>))</span><br></pre></td></tr></table></figure>
+<p>P_hash是一个数据扩展函数，使用一个hash函数把一个秘密数（secret）和种子（seed）扩展成任意长度的输出。如果需要，P_hash可以迭代足够多次，从而产生足够数量的数据。 比如，如果P_SHA256用于产生80字节数据，则需要迭代3次（直至A(3)），产生96字节输出数据；最后一次迭代生成数据的最后16个字节是多余的，将被丢弃，而保留80字节数据。</p>
+<h2 id="key-block"><a href="#key-block" class="headerlink" title="key block"></a>key block</h2><p>最终通信双方产生相同的master secret，且进一步产生相同的keying material，通过相同顺序的切割，最后得到一致的6个密钥。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">key_block= PRF(SecurityParameters.master_secret,</span><br><span class="line">               <span class="string">"key expansion"</span>,</span><br><span class="line">               SecurityParameters.server_random+</span><br><span class="line">               SecurityParameters.client_random);</span><br></pre></td></tr></table></figure>
+
+<h1 id="TLS会话恢复"><a href="#TLS会话恢复" class="headerlink" title="TLS会话恢复"></a>TLS会话恢复</h1><h2 id="被遗弃的Session-ID机制"><a href="#被遗弃的Session-ID机制" class="headerlink" title="被遗弃的Session ID机制"></a>被遗弃的Session ID机制</h2><p>在ClientHello与ServerHello中，都存在着SessionID字段，其作用就在于恢复一段会话。恢复流程如下：</p>
+<ul>
+<li>ClientHello.SessionID=NULL<ul>
+<li>ServerHello.SessionID=NULL：表示将来没有重用该会话信息的意愿</li>
+<li>ServerHello.SessionID=Random()：标识当前会话，客户端保存SessionID及与该会话相关的信息，之后走完握手流程。</li>
+</ul>
+</li>
+<li>ClientHello.SessionID=SessionID<ul>
+<li>ServerHello.SessionID=NULL：表示不匹配或没有重用该会话信息的意愿，之后走完握手流程。</li>
+<li>ServerHello.SessionID=SessionID：匹配成功，然后，客户端和服务器均必须发送ChangeCipherSpec消息且直接继续发送 Finished消息。<br><img src="SessionID%E6%B5%81%E7%A8%8B.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<p>问题在于，为每一个客户端创建和维护一个session cache需要大量存储空间；多个服务器之间共享session cache也是个难题。</p>
+<h2 id="Session-Ticket机制"><a href="#Session-Ticket机制" class="headerlink" title="Session Ticket机制"></a>Session Ticket机制</h2><p>ticket指的是一个由服务器创建和使用的且受密码学保护的数据结构，服务器使用ticket来重建与特定会话相关的状态。由<strong>客户端</strong>存储，服务器负责解密验证从而恢复会话</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span> </span><br><span class="line">    opaque key_name[<span class="number">16</span>]; </span><br><span class="line">    opaque iv[<span class="number">16</span>]; </span><br><span class="line">    opaque encrypted_state&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;; </span><br><span class="line">    opaque mac[<span class="number">32</span>]; </span><br><span class="line">&#125; ticket;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span>&#123;</span> </span><br><span class="line">    ProtocolVersion protocol_version; </span><br><span class="line">    CipherSuite cipher_suite; </span><br><span class="line">    CompressionMethod compression_method; </span><br><span class="line">    opaque master_secret[<span class="number">48</span>]; </span><br><span class="line">    ClientIdentity client_identity; </span><br><span class="line">    uint32 timestamp; </span><br><span class="line">&#125; StatePlaintext;</span><br></pre></td></tr></table></figure>
+<p>当服务器与客户端支持Session Ticket机制时，handshake的extension中会包含SessionTicket，初始情况下len为0。<br>服务器发送New Session Ticket数据包，传输Ticket。（Handshake Type为4）如图所示：<br><img src="sessionticket.png" alt=""><br>注意的是，即使是使用Session Ticket机制，SessionID字段<strong>仍会被填充</strong>，但这会用于区分服务器是在恢复一个会话还是在进行一次完整的握手协议。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8D%8F%E8%AE%AE/" rel="tag"># 协议</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/20/PGP%E5%8D%8F%E8%AE%AE/" rel="next" title="PGP协议">
+                <i class="fa fa-chevron-left"></i> PGP协议
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" rel="prev" title="无线网络协议">
+                无线网络协议 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="陈潇" />
+            
+              <p class="site-author-name" itemprop="name">陈潇</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/iwannatobehappy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://845895322@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS-Record-Protocol"><span class="nav-number">1.</span> <span class="nav-text">TLS Record Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#功能目标"><span class="nav-number">1.1.</span> <span class="nav-text">功能目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装过程"><span class="nav-number">1.2.</span> <span class="nav-text">封装过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分片"><span class="nav-number">1.2.1.</span> <span class="nav-text">分片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#压缩"><span class="nav-number">1.2.2.</span> <span class="nav-text">压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全处理"><span class="nav-number">1.2.3.</span> <span class="nav-text">安全处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS-Handshake-Protocol"><span class="nav-number">2.</span> <span class="nav-text">TLS Handshake Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#交换流程"><span class="nav-number">2.1.</span> <span class="nav-text">交换流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装过程-1"><span class="nav-number">2.2.</span> <span class="nav-text">封装过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HelloRequest"><span class="nav-number">2.2.1.</span> <span class="nav-text">HelloRequest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ClientHello"><span class="nav-number">2.2.2.</span> <span class="nav-text">ClientHello;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServerHello"><span class="nav-number">2.2.3.</span> <span class="nav-text">ServerHello</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Certificate"><span class="nav-number">2.2.4.</span> <span class="nav-text">Certificate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServerKeyExchange"><span class="nav-number">2.2.5.</span> <span class="nav-text">ServerKeyExchange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CertificateRequest"><span class="nav-number">2.2.6.</span> <span class="nav-text">CertificateRequest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServerHelloDone"><span class="nav-number">2.2.7.</span> <span class="nav-text">ServerHelloDone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CertificateVerify"><span class="nav-number">2.2.8.</span> <span class="nav-text">CertificateVerify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ClientKeyExchange"><span class="nav-number">2.2.9.</span> <span class="nav-text">ClientKeyExchange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Finished"><span class="nav-number">2.2.10.</span> <span class="nav-text">Finished</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS-ChangeCipherSpec-Protocol"><span class="nav-number">3.</span> <span class="nav-text">TLS ChangeCipherSpec Protocol</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Alert-Protocol"><span class="nav-number">4.</span> <span class="nav-text">Alert Protocol</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Application-Data-Protocol"><span class="nav-number">5.</span> <span class="nav-text">Application Data Protocol</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS的密钥生成"><span class="nav-number">6.</span> <span class="nav-text">TLS的密钥生成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pre-master-secret"><span class="nav-number">6.1.</span> <span class="nav-text">pre master secret</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#master-secret"><span class="nav-number">6.2.</span> <span class="nav-text">master secret</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PRF"><span class="nav-number">6.3.</span> <span class="nav-text">PRF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key-block"><span class="nav-number">6.4.</span> <span class="nav-text">key block</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS会话恢复"><span class="nav-number">7.</span> <span class="nav-text">TLS会话恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#被遗弃的Session-ID机制"><span class="nav-number">7.1.</span> <span class="nav-text">被遗弃的Session ID机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-Ticket机制"><span class="nav-number">7.2.</span> <span class="nav-text">Session Ticket机制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈潇</span>
+
+  
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'oXGA1XzMIhhs9x4yNbf1DOge-gzGzoHsz',
+        appKey: 'JYRNnDQ1kh2RA7V2MYsSnRVR',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="fd.io," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="种菜园" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="项目目标是了解CSIT。CSIT是FD.io下的一套测试框架，而fd.io则是基于DPDK的一套集成而来的报文处理方案，其核心项目为VPP（Vector Packet Processor）。因此在了解CSIT之前，不可避免的要大概了解一下DPDK与VPP。 DPDK网速的提升带动了数据处理速度提升的需求，传统IP层及以下采用硬件实现功能的方案出现了迭代速度慢的问题，基于软件的高性能网络IO开发框架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSIT初探">
+<meta property="og:url" content="https://iwannatobehappy.github.io/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/index.html">
+<meta property="og:site_name" content="种菜园">
+<meta property="og:description" content="项目目标是了解CSIT。CSIT是FD.io下的一套测试框架，而fd.io则是基于DPDK的一套集成而来的报文处理方案，其核心项目为VPP（Vector Packet Processor）。因此在了解CSIT之前，不可避免的要大概了解一下DPDK与VPP。 DPDK网速的提升带动了数据处理速度提升的需求，传统IP层及以下采用硬件实现功能的方案出现了迭代速度慢的问题，基于软件的高性能网络IO开发框架">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/DPDK_UIO%E5%8E%9F%E7%90%86.png">
+<meta property="article:published_time" content="2020-02-14T03:57:56.000Z">
+<meta property="article:modified_time" content="2020-02-18T14:16:56.275Z">
+<meta property="article:author" content="陈潇">
+<meta property="article:tag" content="fd.io">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://iwannatobehappy.github.io/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/DPDK_UIO%E5%8E%9F%E7%90%86.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iwannatobehappy.github.io/2020/02/14/CSIT初探/"/>
+
+
+
+
+
+  <title>CSIT初探 | 种菜园</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">种菜园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://iwannatobehappy.github.io/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈潇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="种菜园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CSIT初探</h1>
+        
+
+        <div class="post-meta">
+		  
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-14T11:57:56+08:00">
+                2020-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>项目目标是了解CSIT。CSIT是FD.io下的一套测试框架，而fd.io则是基于DPDK的一套集成而来的报文处理方案，其核心项目为VPP（Vector Packet Processor）。因此在了解CSIT之前，不可避免的要大概了解一下DPDK与VPP。</p>
+<h1 id="DPDK"><a href="#DPDK" class="headerlink" title="DPDK"></a>DPDK</h1><p>网速的提升带动了数据处理速度提升的需求，传统IP层及以下采用硬件实现功能的方案出现了迭代速度慢的问题，基于软件的高性能网络IO开发框架，就是DPDK的目标。软件可以利用的新发展有：云的发展带来网络功能虚拟化、单机性能的飙升（网卡性能发展到了100G，功能却没到，不是很可惜。。）。传统收发报文方式的缺陷还有：硬中断带来耗时、内核态用户态的切换带来耗时、多核工作为全局一致带来性能损耗、网卡到业务进程的不必要路径（如netfiliter）带来性能耗损。</p>
+<p>数据面开发套件（DPDK）采用旁路机制在用户态处理报文（UIO Userspace I/O）。下面对比一下DPDK和传统报文处理流程：</p>
+<blockquote>
+<p>传统报文流程：网卡-》驱动-》协议栈-》Socket接口-》业务<br>DPDK：网卡-》DPDK轮询模式-》DPDK基础库-》业务</p>
+</blockquote>
+<p><strong>UIO原理</strong>：<br><img src="DPDK_UIO%E5%8E%9F%E7%90%86.png" alt=""><br>稍微解读一下这张图：</p>
+<ol>
+<li>UIO Framework调用内核态的API，因为硬中断等只能在内核处理</li>
+<li>用户态通过/dev/uioX读取中断</li>
+<li>通过mmap和外设共享内存</li>
+</ol>
+<p><strong>DPDK轮询模式</strong><br>PMD（Poll Mode Driver）使用UIO驱动屏蔽了硬件发出中断，在用户态采用主动轮询的方式，带来Zero Copy，无系统调用的好处，同步处理减少上下文切换带来的Cache Miss。<br>为了避免网络空闲时CPU的长期空转，采用Interrupt DPDK模式，在没包时进入睡眠，与其他进程共享同个CPU内核，但是DPDK的进程优先级更高。</p>
+<p>还有些其他的改进与机制，目前先了解到这</p>
+<h1 id="VPP"><a href="#VPP" class="headerlink" title="VPP"></a>VPP</h1><p><a href="https://fd.io/vppproject/vpptech/" target="_blank" rel="noopener">https://fd.io/vppproject/vpptech/</a><br>VPP的主要思路就在于：向量化处理而非一个包一个包的处理，且处理流程采用插件的方式保证了高度的可拓展性。<br>从<a href="https://fd.io/vppproject/vppfeatures/" target="_blank" rel="noopener">https://fd.io/vppproject/vppfeatures/</a>中我们可以看出，VPP基本上就是基于新思路将传统网络功能全部重构了一遍。</p>
+<h1 id="CSIT概述"><a href="#CSIT概述" class="headerlink" title="CSIT概述"></a>CSIT概述</h1><ol>
+<li><p>CSIT（）是一套对VPP代码的自动测试项目。</p>
+</li>
+<li><p>在物理机或虚拟机的环境下对LF FD.io中的VPP代码运行CSIT测试套件</p>
+</li>
+<li><p>与FD.io集成</p>
+</li>
+<li><p>检测FD.io项目的依赖性与相互关系</p>
+<h2 id="项目目标"><a href="#项目目标" class="headerlink" title="项目目标"></a>项目目标</h2></li>
+<li><p>对更改的VPP代码进行回归测试<br>对VPP数据控制平台、网络控制平台、管理平台进行功能测试<br>对VPP数据控制平台进行包括丢包率、吞吐量以及延时等性能测试<br>对VPP网络控制平台进行性能测试<br>对VPP管理平台进行性能测试</p>
+</li>
+<li><p>针对支持与计划的VPP功能、接口、性能定义测试用例<br>一维测试： 数据平台，网络控制平台，管理平台<br>多维测试： 用例驱动</p>
+</li>
+<li><p>与FD.io持续集成系统（包括Gerrit和Jenkins）集成<br>由VPP-VERIFY工作自动触发测试的执行</p>
+</li>
+<li><p>与LF VPP测试环境集成<br>在LF托管VM环境中执行功能测试<br>在LF托管的物理计算环境中执行性能和功能测试。<br>在运行VIRL（虚拟Internet路由实验室）的LF托管物理计算上执行的测试子集</p>
+</li>
+</ol>
+<h1 id="Python库"><a href="#Python库" class="headerlink" title="Python库"></a>Python库</h1><h2 id="DMM"><a href="#DMM" class="headerlink" title="DMM"></a>DMM</h2><p>数据处理库</p>
+<ol>
+<li><p>DMMConstants suite</p>
+</li>
+<li><p>SetupDMMTest suite</p>
+</li>
+<li><p>SingleCliSer suite</p>
+<h2 id="DPDK-1"><a href="#DPDK-1" class="headerlink" title="DPDK"></a>DPDK</h2><p>数据面开发套件</p>
+</li>
+<li><p>DPDKTools suite</p>
+</li>
+<li><p>L2fwdTest suite</p>
+</li>
+<li><p>L3fwdTest suite</p>
+<h2 id="MLRsearch"><a href="#MLRsearch" class="headerlink" title="MLRsearch"></a>MLRsearch</h2><p>多线程搜索？</p>
+</li>
+<li><p>AbstractMeasurer suite</p>
+</li>
+<li><p>AbstractSearchAlgorithm suite</p>
+</li>
+<li><p>MultipleLossRatioSearch suite</p>
+</li>
+<li><p>NdrPdrResult suite</p>
+</li>
+<li><p>ReceiveRateInterval suite</p>
+</li>
+<li><p>ReceiveRateMeasurement suite</p>
+<h2 id="PLRsearch"><a href="#PLRsearch" class="headerlink" title="PLRsearch"></a>PLRsearch</h2></li>
+<li><p>Integrator suite<br>积分套件</p>
+</li>
+<li><p>PLRsearch suite<br>数据相关的搜索方法</p>
+</li>
+<li><p>log_plus suite<br>避免下溢的模块</p>
+</li>
+<li><p>stat_trackers suite<br>追踪数据的平均值和方差加权样本</p>
+<h2 id="SFC"><a href="#SFC" class="headerlink" title="SFC"></a>SFC</h2></li>
+<li><p>SFCConstants suite<br>定义了一些常量用于测试</p>
+</li>
+<li><p>SFCTest suite</p>
+</li>
+<li><p>SetupSFCTest suite</p>
+</li>
+<li><p>TunnelProtocol suite</p>
+</li>
+<li><p>VerifyPacket suite</p>
+<h2 id="TLDK"><a href="#TLDK" class="headerlink" title="TLDK"></a>TLDK</h2></li>
+<li><p>SetupTLDKTest suite</p>
+</li>
+<li><p>TLDKConstants suite</p>
+</li>
+<li><p>UdpTest suite</p>
+</li>
+<li><p>gen_pcap suite</p>
+<h2 id="autogen"><a href="#autogen" class="headerlink" title="autogen"></a>autogen</h2></li>
+<li><p>Regenerator suite</p>
+</li>
+<li><p>Testcase suite</p>
+<h2 id="honeycomb"><a href="#honeycomb" class="headerlink" title="honeycomb"></a>honeycomb</h2></li>
+<li><p>BGP suite</p>
+</li>
+<li><p>DHCP suite</p>
+</li>
+<li><p>FIB suite</p>
+</li>
+<li><p>HcAPIKwACL suite</p>
+</li>
+<li><p>HcAPIKwBridgeDomain suite</p>
+</li>
+<li><p>HcAPIKwInterfaces suite</p>
+</li>
+<li><p>HcAPIKwNSH suite</p>
+</li>
+<li><p>HcPersistence suite</p>
+</li>
+<li><p>HoneycombSetup suite</p>
+</li>
+<li><p>HoneycombUtil suite</p>
+</li>
+<li><p>IPv6Management suite</p>
+</li>
+<li><p>Lisp suite</p>
+</li>
+<li><p>NAT suite</p>
+</li>
+<li><p>Netconf suite</p>
+</li>
+<li><p>Notifications suite</p>
+</li>
+<li><p>Performance suite</p>
+</li>
+<li><p>ProxyARP suite</p>
+</li>
+<li><p>Routing suite</p>
+<h2 id="parsers"><a href="#parsers" class="headerlink" title="parsers"></a>parsers</h2></li>
+<li><p>9.1. JsonParser suite</p>
+<h2 id="telemetry"><a href="#telemetry" class="headerlink" title="telemetry"></a>telemetry</h2></li>
+<li><p>10.1. SPAN suite</p>
+</li>
+</ol>
+<h1 id="Robot库"><a href="#Robot库" class="headerlink" title="Robot库"></a>Robot库</h1><p>Robot是Python语言下的一个测试框架<br>使用与了解Robot可看<a href="https://www.jianshu.com/p/c3a9d20db4e5" target="_blank" rel="noopener">https://www.jianshu.com/p/c3a9d20db4e5</a></p>
+<h1 id="DMM功能测试"><a href="#DMM功能测试" class="headerlink" title="DMM功能测试"></a>DMM功能测试</h1>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/fd-io/" rel="tag"># fd.io</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" rel="next" title="无线网络协议">
+                <i class="fa fa-chevron-left"></i> 无线网络协议
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/17/%E5%9C%A8%E5%AE%B6%E7%9A%84%E6%97%A5%E5%AD%90/" rel="prev" title="在家的日子">
+                在家的日子 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="陈潇" />
+            
+              <p class="site-author-name" itemprop="name">陈潇</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/iwannatobehappy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://845895322@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DPDK"><span class="nav-number">1.</span> <span class="nav-text">DPDK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VPP"><span class="nav-number">2.</span> <span class="nav-text">VPP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CSIT概述"><span class="nav-number">3.</span> <span class="nav-text">CSIT概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目目标"><span class="nav-number">3.1.</span> <span class="nav-text">项目目标</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python库"><span class="nav-number">4.</span> <span class="nav-text">Python库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DMM"><span class="nav-number">4.1.</span> <span class="nav-text">DMM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DPDK-1"><span class="nav-number">4.2.</span> <span class="nav-text">DPDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MLRsearch"><span class="nav-number">4.3.</span> <span class="nav-text">MLRsearch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PLRsearch"><span class="nav-number">4.4.</span> <span class="nav-text">PLRsearch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SFC"><span class="nav-number">4.5.</span> <span class="nav-text">SFC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLDK"><span class="nav-number">4.6.</span> <span class="nav-text">TLDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#autogen"><span class="nav-number">4.7.</span> <span class="nav-text">autogen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#honeycomb"><span class="nav-number">4.8.</span> <span class="nav-text">honeycomb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parsers"><span class="nav-number">4.9.</span> <span class="nav-text">parsers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#telemetry"><span class="nav-number">4.10.</span> <span class="nav-text">telemetry</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Robot库"><span class="nav-number">5.</span> <span class="nav-text">Robot库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DMM功能测试"><span class="nav-number">6.</span> <span class="nav-text">DMM功能测试</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈潇</span>
+
+  
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'oXGA1XzMIhhs9x4yNbf1DOge-gzGzoHsz',
+        appKey: 'JYRNnDQ1kh2RA7V2MYsSnRVR',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

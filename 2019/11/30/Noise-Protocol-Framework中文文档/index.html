@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="种菜园" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="http:&#x2F;&#x2F;www.noiseprotocol.org&#x2F;noise.html 谷歌翻译，肉眼校验尚未完成 介绍​        Noise是基于Diffie-Hellman密钥协议的加密协议的框架。 Noise可能描述了包含单个消息的协议以及交互协议。 概述术语​        Noise协议始于两方交换握手消息。在此握手阶段，双方会交换DH公钥并执行一系列DH操作，将DH结果散列为共享密钥。在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Noise Protocol Framework中文文档">
+<meta property="og:url" content="https://iwannatobehappy.github.io/2019/11/30/Noise-Protocol-Framework%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/index.html">
+<meta property="og:site_name" content="种菜园">
+<meta property="og:description" content="http:&#x2F;&#x2F;www.noiseprotocol.org&#x2F;noise.html 谷歌翻译，肉眼校验尚未完成 介绍​        Noise是基于Diffie-Hellman密钥协议的加密协议的框架。 Noise可能描述了包含单个消息的协议以及交互协议。 概述术语​        Noise协议始于两方交换握手消息。在此握手阶段，双方会交换DH公钥并执行一系列DH操作，将DH结果散列为共享密钥。在">
+<meta property="article:published_time" content="2019-11-30T07:59:53.000Z">
+<meta property="article:modified_time" content="2019-11-30T11:58:38.038Z">
+<meta property="article:author" content="陈潇">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iwannatobehappy.github.io/2019/11/30/Noise-Protocol-Framework中文文档/"/>
+
+
+
+
+
+  <title>Noise Protocol Framework中文文档 | 种菜园</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">种菜园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://iwannatobehappy.github.io/2019/11/30/Noise-Protocol-Framework%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈潇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="种菜园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Noise Protocol Framework中文文档</h1>
+        
+
+        <div class="post-meta">
+		  
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-30T15:59:53+08:00">
+                2019-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/30/Noise-Protocol-Framework%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/30/Noise-Protocol-Framework%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  17.9k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://www.noiseprotocol.org/noise.html" target="_blank" rel="noopener">http://www.noiseprotocol.org/noise.html</a></p>
+<p>谷歌翻译，肉眼校验尚未完成</p>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>​        Noise是基于Diffie-Hellman密钥协议的加密协议的框架。 Noise可能描述了包含单个消息的协议以及交互协议。</p>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><p>​        Noise协议始于两方交换<strong>握手消息</strong>。在此<strong>握手阶段</strong>，双方会交换DH公钥并执行一系列DH操作，将DH结果散列为共享密钥。在握手阶段之后，各方都可以使用此共享密钥来发送加密的<strong>传输消息</strong>。</p>
+<p>​        Noise框架支持握手，其中每个参与方都有一个长期的<strong>静态密钥对</strong>和/或<strong>临时密钥对</strong>。Noise握手由一种简单的语言描述。该语言由<strong>令牌</strong>组成，令牌被安排为<strong>消息模式</strong>。消息模式被安排为<strong>握手模式</strong>。</p>
+<p>​        <strong>消息模式</strong>是一系列令牌，这些令牌指定了包含握手消息的DH公共密钥以及在发送或接收该消息时执行的DH操作。<strong>握手模式</strong>指定顺序交换组成握手的消息。</p>
+<p>​        握手模式可以通过<strong>DH函数</strong>，<strong>密码函数</strong>和<strong>哈希函数</strong>实例化以给出具体的<strong>Noise协议</strong>。</p>
+<h2 id="握手状态机概述"><a href="#握手状态机概述" class="headerlink" title="握手状态机概述"></a>握手状态机概述</h2><p>​        Noise的核心是在握手过程中各方维护的一组变量，以及通过顺序处理消息模式中的令牌来发送和接收握手消息的规则。</p>
+<p>​        各方维护以下变量：</p>
+<p>​        s, e: 本地用户的静态和临时密钥对（可能为空）。</p>
+<p>​        rs, re: 远程方的静态和临时公共密钥（可能为空）。</p>
+<p>​        h: 一个<strong>握手哈希值</strong>，该值散列已发送和接收的所有握手数据。</p>
+<p>​        ck:散列所有先前DH输出的<strong>链接密钥</strong>。 一旦握手完成，链接密钥将用于导出传输消息的加密密钥。</p>
+<p>​        k, n: 加密密钥k（可以为空）和基于计数器的随机数n。 每当新的DH输出导致要计算新的ck时，也会计算新的k。 密钥k和随机数n用于加密静态公共密钥和握手有效负载。 用k加密使用某种<strong>AEAD</strong>密码模式（在Rogaway [1]的意义上），并使用当前的h值作为AEAD身份验证涵盖的<strong>关联数据</strong>。 静态公共密钥和有效负载的加密在握手阶段提供了一些机密性和密钥确认。</p>
+<p>​        握手消息由一些DH公共密钥和有效载荷组成。 <strong>有效负载</strong>可能包含证书或应用程序选择的其他数据。 为了发送握手消息，发送方指定有效负载并按消息模式顺序处理每个令牌。 可能的标记为：</p>
+<p>​        “e”:发送方生成一个新的临时密钥对，并将其存储在e变量中，将临时公共密钥作为明文写入消息缓冲区，并将该公共密钥与旧的h一起哈希以得出新的h。</p>
+<p>​        “s”: 发送者将其s变量的静态公钥写入消息缓冲区，如果k为非空，则对其进行加密，然后将输出与旧的h一起哈希处理以得出新的h。</p>
+<p>​        “ee”, “se”, “es”, “ss”: 在发起者的密钥对（由第一字母确定是静态还是短暂的）和响应者的密钥对（由第二个字母决定是静态还是临时的）之间进行DH。 将结果与旧ck一起进行哈希处理以得出新的ck和k，并且n设置为零。</p>
+<p>​        在握手消息中处理了最终令牌之后，发送方将有效负载写入消息缓冲区，如果k为非空，则对其进行加密，然后将输出与旧的h一起哈希处理以得出新的h。</p>
+<p>​        举一个简单的例子，握手模式描述了未经身份验证的DH握手：</p>
+<pre><code>  -&gt; e
+  &lt;- e, ee
+**发起方**发送第一条消息，它只是一个短暂的公共密钥。 **响应者**发回自己的临时公共密钥。 然后执行DH，并将输出散列到共享密钥中。</code></pre><p>​        请注意，在明文短暂的公共密钥之后，在第一条消息中发送明文有效载荷，在明文短暂的公共密钥之后，在响应消息中发送加密的有效载荷。 应用程序可以发送所需的任何有效负载。</p>
+<p>​        响应者可以发送其静态公钥（经过加密），并通过略有不同的模式进行身份验证：</p>
+<pre><code>  -&gt; e
+  &lt;- e, ee, s, es
+在这种情况下，最终的ck和k值是两个DH结果的哈希值。 由于es令牌指示发起者的临时密钥与响应者的静态密钥之间的DH，因此，发起者对第二条消息的有效负载进行的成功解密可用于向发起者认证响应者。</code></pre><p>​        请注意，第二条消息的有效负载可能包含零长度的明文，但是有效负载密文仍将包含身份验证数据（例如身份验证标签或“合成IV”），因为加密是通过AEAD模式进行的。 第二条消息的有效负载也可以用于为响应者的静态公钥传递证书。</p>
+<p>​        启动器可以使用握手模式和一条附加消息来发送其静态公共密钥（经过加密）并进行身份验证：</p>
+<pre><code>  -&gt; e
+  &lt;- e, ee, s, es
+  -&gt; s, se
+以下各节充实了细节，并增加了一些复杂性。 但是，Noise的核心是这种简单的变量，令牌和处理规则系统，可以简洁表达一系列协议。</code></pre><h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><p>​        所有Noise消息的长度均小于或等于65535字节。 限制消息大小有几个优点：</p>
+<p>​        测试更简单，因为可以轻松测试最大尺寸。</p>
+<p>​        减少内存处理错误或整数溢出的可能性。</p>
+<p>​        支持大型数据流的流解密和随机访问解密。</p>
+<p>​        使封装Noise消息的高层协议能够使用16位的有效标准长度字段。</p>
+<p>​        由于没有类型或长度字段，因此无需分析即可处理所有Noise消息。 当然，Noise消息可能封装在包含类型和长度信息的更高级别的协议中。 Noise消息可能封装了需要某种形式解析的有效载荷，但是有效载荷是由应用程序而不是由Noise处理的。</p>
+<p>​        Noise传输消息只是一个AEAD密文，其长度小于或等于65535字节，并且由加密的有效负载和16字节的身份验证数据组成。 细节取决于AEAD密码功能，例如 AES256-GCM或ChaCha20-Poly1305，但通常，身份验证数据是附加在密文中的16字节身份验证标签，或者是附加在密文中的16字节合成IV。</p>
+<p>​        Noise握手消息也小于或等于65535字节。 它以一个或多个DH公共密钥的序列开始，这取决于其消息模式。 在公共密钥之后将是单个有效载荷，该有效载荷可用于传送证书或其他握手数据，但也可以包含零长度的明文。</p>
+<p>​        如果静态公钥和有效载荷是在DH操作之前通过握手发送的，则将以明文形式显示；如果它们在DH操作之后发生，则将是AEAD密文。 （如果将Noise与预共享的对称密钥一起使用，则此规则有所不同；请参见第9节）。 与传输消息一样，AEAD密文会将每个加密字段（无论是静态公共密钥还是有效负载）扩展16个字节。</p>
+<p>​        例如，考虑握手模式：</p>
+<p>​          -&gt; e<br>​          &lt;- e, ee, s, es<br>          -&gt; s, se<br>​        第一条消息包含一个明文公共密钥（“ e”），后跟一个明文有效负载（请记住，有效负载在每个消息模式的末尾都是隐式的）。 第二条消息由明文公共密钥（“ e”），加密的公共密钥（“ s”）和加密的有效负载组成。 第三条消息由加密的公共密钥（“ s”）和加密的有效负载组成。</p>
+<p>​        假设每个有效载荷包含零长度的纯文本，并且DH公共密钥为56个字节，则消息大小为：</p>
+<pre><code>1. 56个字节（一个明文公共密钥和一个明文有效负载）
+2. 144个字节（两个公用密钥，第二个加密，以及加密的有效负载）
+3. 88字节（一个加密的公共密钥和加密的有效负载）</code></pre><h1 id="加密功能"><a href="#加密功能" class="headerlink" title="加密功能"></a>加密功能</h1><p>​        Noise协议由DH函数，密码函数和哈希函数的具体集合实例化。 这些功能的签名定义如下。 第12节中定义了一些具体功能。</p>
+<p>​        在算法伪代码中将使用以下表示法：</p>
+<ul>
+<li>|| 运算符连接字节序列。</li>
+<li>byte（）函数构造一个字节。</li>
+</ul>
+<h2 id="DH-functions"><a href="#DH-functions" class="headerlink" title="DH functions"></a>DH functions</h2><p>​    Noise取决于以下DH函数（以及相关的常数）：</p>
+<ul>
+<li><p><strong>GENERATE_KEYPAIR（）</strong>：生成一个新的Diffie-Hellman密钥对。 DH密钥对由public_key和private_key元素组成。 public_key表示将DH公钥编码为长度为DHLEN的字节序列。 public_key编码详细信息特定于每组DH函数。</p>
+</li>
+<li><p><strong>DH（key_pair，public_key）</strong>：在key_pair中的私钥和public_key之间执行Diffie-Hellman计算，并返回长度为DHLEN的字节输出序列。为了安全起见，任何实际的密码分析对手都无法解决基于此功能的Gap-DH问题[2]。</p>
+<p>public_key编码某个值，该值是大型素数组中的生成器（该值可能具有多个等效编码），或者是无效值。实现必须通过返回纯粹是公钥的函数且不依赖于私钥的某些输出，或者通过向调用者发送错误信号，来处理无效的公钥。 DH函数可以定义更具体的规则来处理无效值。</p>
+</li>
+<li><p><strong>DHLEN</strong> =一个常数，指定公用密钥和DH输出的字节大小。出于安全原因，DHLEN必须为32或更大。</p>
+</li>
+</ul>
+<h2 id="Cipher-functions"><a href="#Cipher-functions" class="headerlink" title="Cipher functions"></a>Cipher functions</h2><p>Noise取决于以下密码函数：</p>
+<ul>
+<li><p><strong>ENCRYPT（k，n，ad，plaintext）</strong>：使用32字节的密码密钥k和8字节的无符号整数随机数n加密明文，该密钥对于密钥k必须是唯一的。返回密文。必须使用关联数据广告的“ AEAD”加密模式进行加密（使用[1]中的术语），并返回与明文大小相同的密文，外加16字节的身份验证数据。如果密钥是秘密的，则整个密文必须与随机无区别（请注意，这是一个附加要求，并非所有AEAD方案都必须满足）。</p>
+</li>
+<li><p><strong>DECRYPT（k，n，ad，ciphertext）</strong>：使用32字节的密码密钥k，8字节无符号整数nonce n和关联的数据ad解密密文。除非身份验证失败，否则返回纯文本，在这种情况下，将向调用者发出错误信号。</p>
+</li>
+<li><p><strong>REKEY（k）</strong>：返回一个新的32字节密码密钥，作为k的伪随机函数。如果未为某些密码功能组专门定义此功能，则默认为从ENCRYPT（k，maxnonce，zerolen，zeros）返回前32个字节，其中maxnonce等于264-1，zerolen是零长度字节序列，并且零是由零填充的32个字节的序列。</p>
+</li>
+</ul>
+<h2 id="哈希函数"><a href="#哈希函数" class="headerlink" title="哈希函数"></a>哈希函数</h2><p>​        Noise取决于以下哈希函数（和关联的常数）：</p>
+<ul>
+<li><p><strong>HASH（data）</strong>：使用抗冲突的加密哈希函数对某些任意长度的数据进行哈希处理，并返回HASHLEN字节的输出。</p>
+</li>
+<li><p><strong>HASHLEN</strong> =一个常数，指定哈希输出的大小（以字节为单位）。必须是32或64。</p>
+</li>
+<li><p><strong>BLOCKLEN</strong> =一个常数，指定哈希函数在内部用于划分其输入以进行迭代处理的大小（以字节为单位）。这是将哈希函数与HMAC一起使用所必需的（[3]中BLOCKLEN为B）。</p>
+<p>Noise根据上述HASH（）函数定义了其他函数：</p>
+</li>
+<li><p><strong>HMAC-HASH（key，data）</strong>：使用HASH（）函数应用[3]中的HMAC。下文仅将此函数作为HKDF（）的一部分进行调用。</p>
+</li>
+<li><p><strong>HKDF（chaining_key，input_key_material，num_outputs</strong>）：接受一个长度为HASHLEN的chaining_key字节序列，以及一个长度为零字节，32字节或DHLEN字节的input_key_material字节序列。返回两个或三个字节序列，每个字节序列的长度为HASHLEN，具体取决于num_outputs是两个还是三个：</p>
+<ul>
+<li><p>设置temp_key = HMAC-HASH（chaining_key，input_key_material）。</p>
+</li>
+<li><p>设置输出1 = HMAC-HASH（temp_key，字节（0x01））。</p>
+</li>
+<li><p>设置output2 = HMAC-HASH（temp_key，output1 ||字节（0x02））。</p>
+</li>
+<li><p>如果num_outputs == 2，则返回该对（输出1，输出2）。</p>
+</li>
+<li><p>设置output3 = HMAC-HASH（temp_key，output2 ||字节（0x03））。</p>
+</li>
+<li><p>返回三元组（输出1，输出2，输出3）。</p>
+<p>请注意，temp_key，output1，output2和output3的长度均为HASHLEN字节。还要注意，HKDF函数只是[4]中的HKDF，其chaining_key为HKDF盐，且长度为零。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="加工规则"><a href="#加工规则" class="headerlink" title="加工规则"></a>加工规则</h1><p>​        为了精确定义处理规则，我们采用面向对象的术语，并提出了三个“对象”，它们封装了状态变量并包含实现处理逻辑的函数。这三个对象以层次结构的形式呈现：每个更高层的对象都包含一个位于其下的对象的实例。从最低层到最高层，对象是：</p>
+<ul>
+<li><p><strong>CipherState</strong>对象包含k和n个变量，用于加密和解密密文。在握手阶段，每个参与方都有一个单独的CipherState，但是在传输阶段，每个参与方都有两个CipherState对象：一个用于发送，一个用于接收。</p>
+</li>
+<li><p><strong>SymmetricState</strong>对象包含一个CipherState以及ck和h变量。之所以这样命名，是因为它封装了Noise使用的所有“对称加密”。在握手阶段，每个参与方都有一个SymmetricState，一旦握手完成，就可以将其删除。</p>
+</li>
+<li><p><strong>HandshakeState</strong>对象包含SymmetricState加上DH变量（s，e，rs，re）和代表握手模式的变量。在握手阶段，每个参与方都有一个HandshakeState，握手完成后即可将其删除。</p>
+</li>
+</ul>
+<p>​        要执行Noise协议，请初始化HandshakeState。在初始化期间，您可以为您了解的远程方指定握手模式，任何本地密钥对以及任何公共密钥。在Initialize（）之后，您可以在HandshakeState上调用WriteMessage（）和ReadMessage（）来处理每个握手消息。如果DECRYPT（）或DH（）函数发出任何错误信号，则握手失败，并且HandshakeState被删除。</p>
+<p>​        处理最后的握手消息将返回两个CipherState对象，第一个对象用于加密从发起方到响应方的传输消息，第二个对象用于在另一个方向上的消息。那时，应该删除HandshakeState，但哈希值h除外，该值可以用于握手后通道绑定（请参阅第11.2节）。</p>
+<p>​        然后，通过使用零长度关联数据在相关CipherState上调用EncryptWithAd（）和DecryptWithAd（）对传输消息进行加密和解密。如果DecryptWithAd（）因DECRYPT（）失败而发出错误信号，则输入消息将被丢弃。应用程序可以选择删除CipherState并在发生此类错误时终止会话，或者可以继续尝试进行通信。如果EncryptWithAd（）或DecryptWithAd（）由于随机数耗尽而发出错误信号，则应用程序必须删除CipherState并终止会话。</p>
+<p>​        以下各节详细介绍了这些对象。</p>
+<h2 id="CipherState"><a href="#CipherState" class="headerlink" title="CipherState"></a>CipherState</h2><p>CipherState可以根据其k和n变量对数据进行加密和解密：</p>
+<ul>
+<li><p><strong>k</strong>：32个字节的密码密钥（可以为空）。空是一个特殊值，它指示k尚未初始化。</p>
+</li>
+<li><p><strong>n</strong>：8字节（64位）无符号整数随机数。</p>
+<p>  CipherState响应以下功能。应用于n的++后递增运算符表示“使用当前n值，然后对其进行递增”。 n最大值（264-1）保留供其他使用。如果将n递增导致264-1，则任何进一步的EncryptWithAd（）或DecryptWithAd（）调用都会向调用者发出错误信号。</p>
+</li>
+<li><p><strong>InitializeKey（key）</strong>：设置k =键。设置n = 0。</p>
+</li>
+<li><p><strong>HasKey（）</strong>：如果k为非空，则返回true，否则返回false。</p>
+</li>
+<li><p><strong>SetNonce（nonce）</strong>：设置n =随机数。该功能用于处理无序传输消息，如第11.4节所述。</p>
+</li>
+<li><p><strong>EncryptWithAd（ad，明文）</strong>：如果k为非空，则返回ENCRYPT（k，n ++，ad，明文）。否则返回纯文本。</p>
+</li>
+<li><p><strong>DecryptWithAd（ad，密文）</strong>：如果k为非空，则返回DECRYPT（k，n ++，ad，密文）。否则返回密文。如果DECRYPT（）中发生身份验证失败，则n不会递增，并且会向调用方发出错误信号。</p>
+</li>
+<li><p><strong>Rekey（）</strong>：设置k = REKEY（k）。</p>
+</li>
+</ul>
+<h2 id="SymmetricState"><a href="#SymmetricState" class="headerlink" title="SymmetricState"></a>SymmetricState</h2><p>​    SymmetricState对象包含一个CipherState以及以下变量：</p>
+<ul>
+<li><p><strong>ck</strong>：HASHLEN字节的链接密钥。</p>
+</li>
+<li><p><strong>h</strong>：HASHLEN字节的哈希输出。</p>
+</li>
+</ul>
+<p>  SymmetricState响应以下功能：</p>
+<ul>
+<li><p><strong>InitializeSymmetric（protocol_name）</strong>：采用任意长度的protocol_name字节序列（请参见第8节）。执行以下步骤：</p>
+<ul>
+<li>如果protocol_name的长度小于或等于HASHLEN字节，则将h设置为等于protocol_name并附加零字节以构成HASHLEN字节。否则设置h = HASH（协议名称）。</li>
+<li>设置ck = h。</li>
+<li>调用InitializeKey（empty）。</li>
+</ul>
+</li>
+<li><p><strong>MixKey（input_key_material）</strong>：执行以下步骤：</p>
+<ul>
+<li><p>设置ck，temp_k = HKDF（ck，input_key_material，2）。</p>
+</li>
+<li><p>如果HASHLEN为64，则将temp_k截断为32个字节。</p>
+</li>
+<li><p>调用InitializeKey（temp_k）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>MixHash（data）</strong>：设置h = HASH（h || data）。</p>
+</li>
+<li><p><strong>MixKeyAndHash（input_key_material）</strong>：此函数用于处理预共享的对称密钥，如第9节所述。它执行以下步骤：</p>
+<ul>
+<li><p>设置ck，temp_h，temp_k = HKDF（ck，input_key_material，3）。</p>
+</li>
+<li><p>调用MixHash（temp_h）。</p>
+</li>
+<li><p>如果HASHLEN为64，则将temp_k截断为32个字节。</p>
+</li>
+<li><p>调用InitializeKey（temp_k）。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>GetHandshakeHash（）</strong>：返回h。该函数仅应在握手结束时调用，即在调用Split（）函数之后。该功能用于通道绑定，如第11.2节所述</p>
+</li>
+<li><p><strong>EncryptAndHash（plaintext）</strong>：设置密文= EncryptWithAd（h，纯文本），调用MixHash（密文），然后返回密文。请注意，如果k为空，则EncryptWithAd（）调用会将密文设置为等于纯文本。</p>
+</li>
+<li><p><strong>DecryptAndHash（密文）</strong>：设置纯文本= DecryptWithAd（h，密文），调用MixHash（密文），然后返回纯文本。请注意，如果k为空，则DecryptWithAd（）调用将设置纯文本等于密文。</p>
+</li>
+<li><p><strong>Split（）</strong>：返回一对用于加密传输消息的CipherState对象。执行以下步骤，其中zerolen是零长度的字节序列：</p>
+<ul>
+<li>设置temp_k1，temp_k2 = HKDF（ck，zerolen，2）。</li>
+<li>如果HASHLEN为64，则将temp_k1和temp_k2截断为32个字节。</li>
+<li>创建两个新的CipherState对象c1和c2。</li>
+<li>调用c1.InitializeKey（temp_k1）和c2.InitializeKey（temp_k2）。</li>
+<li>返回对（c1，c2）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="HandshakeState"><a href="#HandshakeState" class="headerlink" title="HandshakeState"></a>HandshakeState</h2><p>​        HandshakeState对象包含SymmetricState以及以下变量，其中任何一个都可以为空。空是一个特殊值，它指示变量尚未初始化。</p>
+<ul>
+<li><p><strong>s</strong>：本地静态密钥对</p>
+</li>
+<li><p><strong>e</strong>：本地临时密钥对</p>
+</li>
+<li><p><strong>rs</strong>：远程方的静态公钥</p>
+</li>
+<li><p><strong>re</strong>：远程方的临时公钥</p>
+</li>
+</ul>
+<p>  HandshakeState还具有变量来跟踪其角色以及握手模式的其余部分：</p>
+<ul>
+<li><p><strong>initator</strong>：指示启动器或响应者角色的布尔值。</p>
+</li>
+<li><p><strong>message_patterns</strong>：一系列消息模式。每个消息模式都是来自集合（“ e”，“ s”，“ ee”，“ es”，“ se”，“ ss”）的令牌序列。 （在第9节中引入了一个额外的“ psk”令牌，但我们将其解释推迟到那时。）</p>
+</li>
+</ul>
+<p>HandshakeState响应以下功能：</p>
+<ul>
+<li><p><strong>Initialize（handshake_pattern，发起方，序言，s，e，rs，re）</strong>：采取有效的handshake_pattern（请参见第7节）和发起方布尔值，指定此方作为发起方或响应方的角色。</p>
+<p>采取序言字节序列，该序言字节序列可以为零长度，或者可以包含双方都希望确认的上下文信息相同（请参见第6节）。</p>
+<p>采用一组DH密钥对（s，e）和公共密钥（rs，re）来初始化局部变量，其中任何一个都可以为空。仅当handshake_pattern使用预消息时才传递公共密钥（请参见第7节）。临时值（e，re）通常保留为空，因为它们是在握手期间创建和交换的。但也有例外（请参阅第10节）。</p>
+<p>执行以下步骤：</p>
+<ul>
+<li><p>如第8节中所述，通过组合握手模式和加密函数的名称来得出协议名称字节序列。调用InitializeSymmetric（protocol_name）。</p>
+</li>
+<li><p>调用MixHash（prologue）。</p>
+</li>
+<li><p>将启动器s，e，rs和re变量设置为相应的参数。</p>
+</li>
+<li><p>对来自handshake_pattern的预消息中列出的每个公钥调用一次MixHash（），并使用指定的公钥作为输入（有关预消息的说明，请参见第7节）。如果发起方和响应方都有预消息，则首先对发起方的公钥进行哈希处理。如果在任一方的预消息中列出了多个公钥，则将按列出的顺序对公钥进行哈希处理。</p>
+</li>
+<li><p>将message_patterns设置为handshake_pattern中的消息模式。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>WriteMessage（payload，message_buffer）</strong>：取一个有效载荷字节序列（长度可以为零），以及一个message_buffer写入输出。执行以下步骤，如果任何EncryptAndHash（）调用返回错误，则中止操作：</p>
+<ul>
+<li><p>从message_patterns中获取并删除下一个消息模式，然后依次处理该消息模式中的每个令牌：</p>
+<ul>
+<li><p>对于“ e”：将e（必须为空）设置为GENERATE_KEYPAIR（）。将e.public_key追加到缓冲区。调用MixHash（e.public_key）。</p>
+</li>
+<li><p>对于“ s”：将EncryptAndHash（s.public_key）追加到缓冲区。</p>
+</li>
+<li><p>对于“ ee”：调用MixKey（DH（e，re））。</p>
+</li>
+<li><p>对于“ es”：如果启动器则调用MixKey（DH（e，rs）），如果响应器则调用MixKey（DH（s，re））。</p>
+</li>
+<li><p>对于“ se”：如果启动器则调用MixKey（DH（s，re）），如果响应器则调用MixKey（DH（e，rs））。</p>
+</li>
+<li><p>对于“ ss”：调用MixKey（DH（s，rs））。</p>
+</li>
+</ul>
+</li>
+<li><p>将EncryptAndHash（payload）追加到缓冲区。</p>
+</li>
+<li><p>如果没有更多消息模式，则通过调用Split（）返回两个新的CipherState对象。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>ReadMessage（message，payload_buffer）</strong>：采取一个字节序列，其中包含一个Noise握手消息，以及一个payload_buffer，用于将消息的纯文本有效负载写入其中。执行以下步骤，如果任何DecryptAndHash（）调用返回错误，则中止操作：</p>
+<ul>
+<li><p>从message_patterns中获取并删除下一个消息模式，然后依次处理该消息模式中的每个令牌：</p>
+<ul>
+<li><p>对于“ e”：将re（必须为空）设置为消息中的下一个DHLEN字节。调用MixHash（re.public_key）。</p>
+</li>
+<li><p>对于“ s”：如果HasKey（）== True，则将temp设置为消息的下一个DHLEN + 16字节，否则将temp设置为下一个DHLEN字节。将rs（必须为空）设置为DecryptAndHash（temp）。</p>
+</li>
+<li><p>对于“ ee”：调用MixKey（DH（e，re））。</p>
+</li>
+<li><p>对于“ es”：如果启动器则调用MixKey（DH（e，rs）），如果响应器则调用MixKey（DH（s，re））。</p>
+</li>
+<li><p>对于“ se”：如果启动器则调用MixKey（DH（s，re）），如果响应器则调用MixKey（DH（e，rs））。</p>
+</li>
+<li><p>对于“ ss”：调用MixKey（DH（s，rs））。</p>
+</li>
+</ul>
+</li>
+<li><p>在消息的其余字节上调用DecryptAndHash（）并将输出存储到payload_buffer。</p>
+</li>
+<li><p>如果没有更多消息模式，则通过调用Split（）返回两个新的CipherState对象。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>​        Noise协议具有<strong>序言</strong>输入，该序言输入允许将任意数据散列到h变量中。 如果双方未提供相同的序言数据，则握手将由于解密错误而失败。 当双方在握手之前进行协商并希望确保他们对协商具有相同的看法时，这很有用。</p>
+<p>​        例如，假设鲍勃向爱丽丝传达了他愿意支持的Noise协议列表。 然后，Alice将选择并执行一个协议。 为了确保“中间人”不会编辑Bob的列表以删除选项，Alice和Bob可以将该列表作为序言数据。</p>
+<p>​        请注意，当事方确认其序言相同时，他们不会将序言数据混入加密密钥中。 如果输入包含旨在加强加密的机密数据，则应改用PSK握手（请参阅第9节）。</p>
+<h1 id="Handshake-patterns"><a href="#Handshake-patterns" class="headerlink" title="Handshake patterns"></a>Handshake patterns</h1><h2 id="Handshake-pattern-basics"><a href="#Handshake-pattern-basics" class="headerlink" title="Handshake pattern basics"></a>Handshake pattern basics</h2><p>​        <strong>消息模式</strong>是来自集合的一些令牌序列（“ e”，“ s”，“ ee”，“ es”，“ se”，“ ss”，“ psk”）。前面已经描述了WriteMessage（）和ReadMessage（）中这些标记的处理，除了“ psk”标记外，这将在第9节中介绍。将来的规范可能会引入其他标记。</p>
+<p>​        <strong>消息前模式</strong>是以下令牌序列之一：</p>
+<ul>
+<li><p>“ e”</p>
+</li>
+<li><p>“ s”</p>
+</li>
+<li><p>“ e，s”</p>
+</li>
+<li><p>empty</p>
+<p>  握手模式包括：</p>
+</li>
+<li><p>启动器的消息前模式，表示响应者已知的有关启动器公钥的信息。</p>
+</li>
+<li><p>响应者的消息前模式，表示发起者已知的有关响应者公钥的信息。</p>
+</li>
+<li><p>实际握手消息的消息模式序列。</p>
+<p>  预消息表示在握手之前以某种方式执行的公共密钥的交换，因此必须将这些公共密钥输入到Initialize（）中，以作为预消息的“收件人”。</p>
+<p>  第一个实际的握手消息从发起方发送到响应方。下一条消息从响应者发送，下一条消息从发起者发送，依此类推。</p>
+<p>  以下握手模式描述了一个未经身份验证的DH握手，它由两个消息模式组成：</p>
+</li>
+</ul>
+<p>NN：<br>  -&gt; e<br>  &lt;-e，ee</p>
+<p>​        在以下握手模式中，发起者和响应者均具有静态密钥对，并且握手模式包括三个消息模式：</p>
+<p>XX：<br>  -&gt; e<br>  &lt;-e，ee，s，es<br>  -&gt; s，se</p>
+<p>​        握手模式名称为NN和XX。该命名约定将在7.5节中说明。</p>
+<p>​        非空的预消息显示为定界符“ …”之前的预消息模式。如果双方都有预消息，则首先列出发起方，然后首先进行哈希处理。在Initialize（）期间，如第5.3节所述，在任何消息前的公钥上调用MixHash（）。</p>
+<p>​        下面的握手模式描述了一个握手，其中发起方已预先了解了响应者的静态公钥，并将其用于“ zero-RTT”加密：</p>
+<p>NK：<br>  &lt;-s<br>  …<br>  -&gt; e，es<br>  &lt;-e，ee<br>        在以下握手模式中，双方都预先了解了对方的静态公钥。发起者的预消息首先列出：</p>
+<p>KK：<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e，es，ss<br>  &lt;-e，ee，se</p>
+<h2 id="Alice-and-Bob"><a href="#Alice-and-Bob" class="headerlink" title="Alice and Bob"></a>Alice and Bob</h2><p>​        在前面显示的所有握手模式中，发起方是左侧的一方（使用向右箭头发送），响应方是右侧的一方。</p>
+<p>​        但是，在复合协议中可能会使用多个Noise协议，其中一个Noise协议中的响应者成为后来的Noise协议的发起者。为了方便使用这种情况下的术语和表示法，我们介绍了Alice和Bob角色的概念，它们不同于发起者和响应者角色。爱丽丝将被视为左侧的聚会（使用右箭头发送消息），而鲍勃将被视为右侧的聚会。</p>
+<p>​        以规范形式（即Alice发起的形式）编写的握手模式假定发起者是Alice（最左边的一方）。到目前为止，所有处理规则和讨论都采用规范形式的握手模式。</p>
+<p>​        但是，可以通过反转箭头和DH令牌（例如用“ se”替换“ es”，反之亦然），以鲍勃发起的形式编写握手模式。这不会改变握手模式，只是使并排查看Alice启动和Bob启动的握手更加容易。</p>
+<p>​        以下是上一节以Bob发起的形式的握手模式：</p>
+<p>NN：<br>  &lt;-e<br>  -&gt; e，ee</p>
+<p>XX：<br>  &lt;-e<br>  -&gt; e，ee，s，se<br>  &lt;-s，es</p>
+<p>NK：<br>  -&gt; s<br>  …<br>  &lt;-e，se<br>  -&gt; e，ee</p>
+<p>KK：<br>  &lt;- s<br>  -&gt; s<br>  …<br>  &lt;-e，se，ss<br>  -&gt; e，ee，es<br>        有关Bob发起的表示法的示例，请参见10.2节。</p>
+<h2 id="握手模式有效性"><a href="#握手模式有效性" class="headerlink" title="握手模式有效性"></a>握手模式有效性</h2><p>握手模式必须在以下方面有效：</p>
+<ol>
+<li><p>各方只能在其拥有的私钥和公钥之间执行DH。</p>
+</li>
+<li><p>各方在每次握手中发送静态静态密钥或临时公共密钥的次数不得超过一次（即，包括预消息在内，发送的消息中最多只能出现一次“ e”，一次出现“ s”）任何一方）。</p>
+</li>
+<li><p>各方每次握手最多只能进行一次DH计算（即每次握手最多只能出现一次“ ee”，“ es”，“ se”或“ ss”）。</p>
+</li>
+<li><p>在远程公共密钥（静态或临时密钥）与本地静态密钥之间执行DH之后，除非本地方也已在其本地临时密钥与远程公共密钥之间执行了DH，否则不得调用ENCRYPT（）。特别是，这意味着（使用规范表示法）：</p>
+<p>在“ se”令牌之后，除非也有“ ee”令牌，否则发起方不得发送握手有效载荷或传输有效载荷。</p>
+<p>在“ ss”令牌之后，除非也有“ es”令牌，否则发起方不得发送握手有效载荷或传输有效载荷。</p>
+<p>在“ es”令牌之后，除非也有“ ee”令牌，否则响应者不得发送握手有效载荷或传输有效载荷。</p>
+<p>在“ ss”令牌之后，除非也有“ se”令牌，否则响应者不得发送握手有效载荷或传输有效载荷。</p>
+</li>
+</ol>
+<p>第一次检查失败的模式显然是胡说八道。</p>
+<p>第二和第三步检查值的冗余传输和冗余计算为非法，以简化实现和测试。</p>
+<p>第四个检查完成两个目的：</p>
+<ul>
+<li><p>首先，这是必要的，因为噪声依赖于涉及临时密钥的DH输出来随机化共享密钥。未能通过此检查的模式可能会导致灾难性的密钥重用，因为受害者可能会发送一条消息，该消息使用不包含其本地临时密钥贡献的密钥加密（或者来自其本地临时令牌的贡献被来自以下位置的无效临时令牌取消了）另一方）。</p>
+</li>
+<li><p>其次，此检查保证了临时密钥可用于提供重要的安全属性，例如前向安全性和防止密钥泄露的模拟能力。</p>
+</li>
+</ul>
+<p>建议用户仅使用下面列出的握手模式，或使用经过专家审核才能满足上述检查要求的其他模式。</p>
+<h2 id="单向握手模式"><a href="#单向握手模式" class="headerlink" title="单向握手模式"></a>单向握手模式</h2><p>The following handshake patterns represent “one-way” handshakes supporting a one-way stream of data from a sender to a recipient. These patterns could be used to encrypt files, database records, or other non-interactive data streams.</p>
+<p>Following a one-way handshake the sender can send a stream of transport messages, encrypting them using the first CipherState returned by Split(). The second CipherState from  Split() is discarded - the recipient must not send any messages using it (as this would violate the rules in Section 7.3).</p>
+<p>One-way patterns are named with a single character, which indicates the status of the sender’s static key:</p>
+<p>N = No static key for sender<br>K = Static key for sender Known to recipient<br>X = Static key for sender Xmitted (“transmitted”) to recipient<br>N:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>K:<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es, ss<br>X:<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss<br>N is a conventional DH-based public-key encryption. The other patterns add sender authentication, where the sender’s public key is either known to the recipient beforehand (K) or transmitted under encryption (X).</p>
+<h2 id="交互式握手模式（基本）"><a href="#交互式握手模式（基本）" class="headerlink" title="交互式握手模式（基本）"></a>交互式握手模式（基本）</h2><p>The following handshake patterns represent interactive protocols. These 12 patterns are called the fundamental interactive handshake patterns.</p>
+<p>The fundamental interactive patterns are named with two characters, which indicate the status of the initiator and responder’s static keys:</p>
+<p>The first character refers to the initiator’s static key:</p>
+<p>N = No static key for initiator<br>K = Static key for initiator Known to responder<br>X = Static key for initiator Xmitted (“transmitted”) to responder<br>I = Static key for initiator Immediately transmitted to responder, despite reduced or absent identity hiding<br>The second character refers to the responder’s static key:</p>
+<p>N = No static key for responder<br>K = Static key for responder Known to initiator<br>X = Static key for responder Xmitted (“transmitted”) to initiator<br>NN:<br>  -&gt; e<br>  &lt;- e, ee<br>   KN:<br>     -&gt; s<br>     …<br>     -&gt; e<br>     &lt;- e, ee, se<br>NK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>   KK:<br>     -&gt; s<br>     &lt;- s<br>     …<br>     -&gt; e, es, ss<br>     &lt;- e, ee, se<br>NX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>    KX:<br>      -&gt; s<br>      …<br>      -&gt; e<br>      &lt;- e, ee, se, s, es<br>XN:<br>  -&gt; e<br>  &lt;- e, ee<br>  -&gt; s, se<br>    IN:<br>      -&gt; e, s<br>      &lt;- e, ee, se<br>XK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>  -&gt; s, se<br>    IK:<br>      &lt;- s<br>      …<br>      -&gt; e, es, s, ss<br>      &lt;- e, ee, se<br>XX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>  -&gt; s, se<br>    IX:<br>      -&gt; e, s<br>      &lt;- e, ee, se, s, es<br>The XX pattern is the most generically useful, since it supports mutual authentication and transmission of static public keys.</p>
+<p>All fundamental patterns allow some encryption of handshake payloads:</p>
+<p>Patterns where the initiator has pre-knowledge of the responder’s static public key (i.e. patterns ending in K) allow zero-RTT encryption, meaning the initiator can encrypt the first handshake payload.</p>
+<p>All fundamental patterns allow half-RTT encryption of the first response payload, but the encryption only targets an initiator static public key in patterns starting with K or I.</p>
+<p>The security properties for handshake payloads are usually weaker than the final security properties achieved by transport payloads, so these early encryptions must be used with caution.</p>
+<p>In some patterns the security properties of transport payloads can also vary. In particular: patterns starting with K or I have the caveat that the responder is only guaranteed “weak” forward secrecy for the transport messages it sends until it receives a transport message from the initiator. After receiving a transport message from the initiator, the responder becomes assured of “strong” forward secrecy.</p>
+<p>More analysis of these payload security properties is in Section 7.7.</p>
+<h2 id="交互式握手模式（延迟）"><a href="#交互式握手模式（延迟）" class="headerlink" title="交互式握手模式（延迟）"></a>交互式握手模式（延迟）</h2><p>The fundamental handshake patterns in the previous section perform DH operations for authentication (“es” and “se”) as early as possible.</p>
+<p>An additional set of handshake patterns can be described which defer these authentication DHs to the next message. To name these deferred handshake patterns, the numeral “1” is used after the first and/or second character in a fundamental pattern name to indicate that the initiator and/or responder’s authentication DH is deferred to the next message.</p>
+<p>Deferred patterns might be useful for several reasons:</p>
+<p>The initiator might have prior knowledge of the responder’s static public key, but not wish to send any 0-RTT encrypted data.</p>
+<p>In some cases, deferring authentication can improve the identity-hiding properties of the handshake (see Section 7.8).</p>
+<p>Future extensions to Noise might be capable of replacing DH operations with signatures or KEM ciphertexts, but would only be able to do so if the sender is authenticating themselves (signatures) or the sender is authenticating the recipient (KEM ciphertexts). Thus every fundamental handshake pattern is only capable of having each authentication DH replaced with a signature or KEM ciphertext, but the deferred variants make both replacements possible.</p>
+<p>Below are two examples showing a fundamental handshake pattern on the left, and deferred variant(s) on the right. The full set of 23 deferred handshake patterns are in the Appendix.</p>
+<p>NK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>    NK1:<br>      &lt;- s<br>      …<br>      -&gt; e<br>      &lt;- e, ee, es<br>XX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>  -&gt; s, se<br>    X1X:<br>      -&gt; e<br>      &lt;- e, ee, s, es<br>      -&gt; s<br>      &lt;- se</p>
+<pre><code>XX1:
+  -&gt; e
+  &lt;- e, ee, s
+  -&gt; es, s, se
+
+X1X1:
+  -&gt; e
+  &lt;- e, ee, s
+  -&gt; es, s
+  &lt;- se</code></pre><h2 id="有效负载安全性属性"><a href="#有效负载安全性属性" class="headerlink" title="有效负载安全性属性"></a>有效负载安全性属性</h2><p>The following table lists the security properties for Noise handshake and transport payloads for all the one-way patterns in Section 7.4 and the fundamental patterns in Section 7.5. Each payload is assigned a “source” property regarding the degree of authentication of the sender provided to the recipient, and a “destination” property regarding the degree of confidentiality provided to the sender.</p>
+<p>The source properties are:</p>
+<p>No authentication. This payload may have been sent by any party, including an active attacker.</p>
+<p>Sender authentication vulnerable to key-compromise impersonation (KCI). The sender authentication is based on a static-static DH (“ss”) involving both parties’ static key pairs. If the recipient’s long-term private key has been compromised, this authentication can be forged. Note that a future version of Noise might include signatures, which could improve this security property, but brings other trade-offs.</p>
+<p>Sender authentication resistant to key-compromise impersonation (KCI). The sender authentication is based on an ephemeral-static DH (“es” or “se”) between the sender’s static key pair and the recipient’s ephemeral key pair. Assuming the corresponding private keys are secure, this authentication cannot be forged.</p>
+<p>The destination properties are:</p>
+<p>No confidentiality. This payload is sent in cleartext.</p>
+<p>Encryption to an ephemeral recipient. This payload has forward secrecy, since encryption involves an ephemeral-ephemeral DH (“ee”). However, the sender has not authenticated the recipient, so this payload might be sent to any party, including an active attacker.</p>
+<p>Encryption to a known recipient, forward secrecy for sender compromise only, vulnerable to replay. This payload is encrypted based only on DHs involving the recipient’s static key pair. If the recipient’s static private key is compromised, even at a later date, this payload can be decrypted. This message can also be replayed, since there’s no ephemeral contribution from the recipient.</p>
+<p>Encryption to a known recipient, weak forward secrecy. This payload is encrypted based on an ephemeral-ephemeral DH and also an ephemeral-static DH involving the recipient’s static key pair. However, the binding between the recipient’s alleged ephemeral public key and the recipient’s static public key hasn’t been verified by the sender, so the recipient’s alleged ephemeral public key may have been forged by an active attacker. In this case, the attacker could later compromise the recipient’s static private key to decrypt the payload. Note that a future version of Noise might include signatures, which could improve this security property, but brings other trade-offs.</p>
+<p>Encryption to a known recipient, weak forward secrecy if the sender’s private key has been compromised. This payload is encrypted based on an ephemeral-ephemeral DH, and also based on an ephemeral-static DH involving the recipient’s static key pair. However, the binding between the recipient’s alleged ephemeral public and the recipient’s static public key has only been verified based on DHs involving both those public keys and the sender’s static private key. Thus, if the sender’s static private key was previously compromised, the recipient’s alleged ephemeral public key may have been forged by an active attacker. In this case, the attacker could later compromise the intended recipient’s static private key to decrypt the payload (this is a variant of a “KCI” attack enabling a “weak forward secrecy” attack). Note that a future version of Noise might include signatures, which could improve this security property, but brings other trade-offs.</p>
+<p>Encryption to a known recipient, strong forward secrecy. This payload is encrypted based on an ephemeral-ephemeral DH as well as an ephemeral-static DH with the recipient’s static key pair. Assuming the ephemeral private keys are secure, and the recipient is not being actively impersonated by an attacker that has stolen its static private key, this payload cannot be decrypted.</p>
+<p>For one-way handshakes, the below-listed security properties apply to the handshake payload as well as transport payloads.</p>
+<p>For interactive handshakes, security properties are listed for each handshake payload. Transport payloads are listed as arrows without a pattern. Transport payloads are only listed if they have different security properties than the previous handshake payload sent from the same party. If two transport payloads are listed, the security properties for the second only apply if the first was received.</p>
+<pre><code>Source         Destination</code></pre><p>N                           0                2<br>K                           1                2<br>X                           1                2<br>NN<br>  -&gt; e                      0                0<br>  &lt;- e, ee                  0                1<br>  -&gt;                        0                1<br>NK<br>  &lt;- s<br>  …<br>  -&gt; e, es                  0                2<br>  &lt;- e, ee                  2                1<br>  -&gt;                        0                5<br>NX<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s, es           2                1<br>  -&gt;                        0                5<br>XN<br>  -&gt; e                      0                0<br>  &lt;- e, ee                  0                1<br>  -&gt; s, se                  2                1<br>  &lt;-                        0                5<br>XK<br>  &lt;- s<br>  …<br>  -&gt; e, es                  0                2<br>  &lt;- e, ee                  2                1<br>  -&gt; s, se                  2                5<br>  &lt;-                        2                5<br>XX<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s, es           2                1<br>  -&gt; s, se                  2                5<br>  &lt;-                        2                5<br>KN<br>  -&gt; s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, se              0                3<br>  -&gt;                        2                1<br>  &lt;-                        0                5<br>KK<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es, ss              1                2<br>  &lt;- e, ee, se              2                4<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>KX<br>  -&gt; s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, se, s, es       2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>IN<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, se              0                3<br>  -&gt;                        2                1<br>  &lt;-                        0                5<br>IK<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss           1                2<br>  &lt;- e, ee, se              2                4<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>IX<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, se, s, es       2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5</p>
+<h2 id="身份隐藏"><a href="#身份隐藏" class="headerlink" title="身份隐藏"></a>身份隐藏</h2><p>The following table lists the identity-hiding properties for all the one-way handshake patterns in Section 7.4 and the fundamental handshake patterns in Section 7.5. In addition, we list a few deferred handshake patterns which have different identity-hiding properties than the corresponding fundamental pattern.</p>
+<p>Each pattern is assigned properties describing the confidentiality supplied to the initiator’s static public key, and to the responder’s static public key. The underlying assumptions are that ephemeral private keys are secure, and that parties abort the handshake if they receive a static public key from the other party which they don’t trust.</p>
+<p>This section only considers identity leakage through static public key fields in handshakes. Of course, the identities of Noise participants might be exposed through other means, including payload fields, traffic analysis, or metadata such as IP addresses.</p>
+<p>The properties for the relevant public key are:</p>
+<p>Transmitted in clear.</p>
+<p>Encrypted with forward secrecy, but can be probed by an anonymous initiator.</p>
+<p>Encrypted with forward secrecy, but sent to an anonymous responder.</p>
+<p>Not transmitted, but a passive attacker can check candidates for the responder’s private key and determine whether the candidate is correct. An attacker could also replay a previously-recorded message to a new responder and determine whether the two responders are the “same” (i.e. are using the same static key pair) by whether the recipient accepts the message.</p>
+<p>Encrypted to responder’s static public key, without forward secrecy. If an attacker learns the responder’s private key they can decrypt the initiator’s public key.</p>
+<p>Not transmitted, but a passive attacker can check candidates for the pair of (responder’s private key, initiator’s public key) and learn whether the candidate pair is correct.</p>
+<p>Encrypted but with weak forward secrecy. An active attacker who pretends to be the initiator without the initiator’s static private key, then later learns the initiator private key, can then decrypt the responder’s public key.</p>
+<p>Not transmitted, but an active attacker who pretends to be the initator without the initiator’s static private key, then later learns a candidate for the initiator private key, can then check whether the candidate is correct.</p>
+<p>Encrypted with forward secrecy to an authenticated party.</p>
+<p>An active attacker who pretends to be the initiator and records a single protocol run can then check candidates for the responder’s public key.</p>
+<pre><code>Initiator      Responder</code></pre><p>N              -              3<br>K              5              5<br>X              4              3<br>NN             -              -<br>NK             -              3<br>NK1            -              9<br>NX             -              1<br>XN             2              -<br>XK             8              3<br>XK1            8              9<br>XX             8              1<br>KN             7              -<br>KK             5              5<br>KX             7              6<br>IN             0              -<br>IK             4              3<br>IK1            0              9<br>IX             0              6</p>
+<h1 id="协议名称和修饰符"><a href="#协议名称和修饰符" class="headerlink" title="协议名称和修饰符"></a>协议名称和修饰符</h1><p>To produce a Noise protocol name for Initialize() you concatenate the ASCII string  “Noise_” with four underscore-separated name sections which sequentially name the handshake pattern, the DH functions, the cipher functions, and then the hash functions. The resulting name must be 255 bytes or less. Examples:</p>
+<p>Noise_XX_25519_AESGCM_SHA256<br>Noise_N_25519_ChaChaPoly_BLAKE2s<br>Noise_IK_448_ChaChaPoly_BLAKE2b<br>Each name section must consist only of alphanumeric characters (i.e. characters in one of the ranges “A”…”Z”, “a”…”z”, and “0”…”9”), and the two special characters “+” and “/“.</p>
+<p>Additional rules apply to each name section, as specified below.</p>
+<p>8.1. Handshake pattern name section</p>
+<p>A handshake pattern name section contains a handshake pattern name plus a sequence of zero or more pattern modifiers.</p>
+<p>The handshake pattern name must be an uppercase ASCII string containing only alphabetic characters or numerals (e.g. “XX1” or “IK”).</p>
+<p>Pattern modifiers specify arbitrary extensions or modifications to the behavior specified by the handshake pattern. For example, a modifier could be applied to a handshake pattern which transforms it into a different pattern according to some rule. The “psk0” and “fallback” modifiers are examples of this, and will be defined later in this document.</p>
+<p>A pattern modifier is named with a lowercase alphanumeric ASCII string which must begin with an alphabetic character (not a numeral). The pattern modifier is appended to the base pattern as described below:</p>
+<p>The first modifier added onto a base pattern is simply appended. Thus the “fallback” modifier, when added to the “XX” pattern, produces “XXfallback”. Additional modifiers are separated with a plus sign. Thus, adding the “psk0” modifier would result in the name section  “XXfallback+psk0”, or a full protocol name such as  “Noise_XXfallback+psk0_25519_AESGCM_SHA256”.</p>
+<p>In some cases the sequential ordering of modifiers will specify different protocols. However, if the order of some modifiers does not matter, then they are required to be sorted alphabetically (this is an arbitrary convention to ensure interoperability).</p>
+<p>8.2. Cryptographic algorithm name sections</p>
+<p>The rules for the DH, cipher, and hash name sections are identical. Each name section must contain one or more algorithm names separated by plus signs.</p>
+<p>Each algorithm name must consist solely of alphanumeric characters and the forward-slash character (“/“). Algorithm names are recommended to be short, and to use the “/“ character only when necessary to avoid ambiguity (e.g. “SHA3/256” is preferable to “SHA3256”).</p>
+<p>In most cases there will be a single algorithm name in each name section (i.e. no plus signs). Multiple algorithm names are only used when called for by the pattern or a modifier.</p>
+<p>None of the patterns or modifiers in this document require multiple algorithm names in any name section. However, this functionality might be useful in future extensions. For example, multiple algorithm names might be used in the DH section to specify “hybrid” post-quantum forward secrecy; or multiple hash algorithms might be specified for different purposes.</p>
+<ol start="9">
+<li>Pre-shared symmetric keys</li>
+</ol>
+<p>Noise provides a pre-shared symmetric key or PSK mode to support protocols where both parties have a 32-byte shared secret key.</p>
+<p>9.1. Cryptographic functions</p>
+<p>PSK mode uses the SymmetricState.MixKeyAndHash() function to mix the PSK into both the encryption keys and the h value.</p>
+<p>Note that MixKeyAndHash() uses HKDF(…, 3). The third output from HKDF() is used as the k value so that calculation of k may be skipped if k is not used.</p>
+<p>9.2. Handshake tokens</p>
+<p>In a PSK handshake, a “psk” token is allowed to appear one or more times in a handshake pattern. This token can only appear in message patterns (not pre-message patterns). This token is processed by calling MixKeyAndHash(psk), where psk is a 32-byte secret value provided by the application.</p>
+<p>In non-PSK handshakes, the “e” token in a pre-message pattern or message pattern always results in a call to MixHash(e.public_key). In a PSK handshake, all of these calls are followed by MixKey(e.public_key). In conjunction with the validity rule in the next section, this ensures that PSK-based encryption uses encryption keys that are randomized using ephemeral public keys as nonces.</p>
+<p>9.3. Validity rule</p>
+<p>To prevent catastrophic key reuse, handshake patterns using the “psk” token must follow an additional validity rule:</p>
+<p>A party may not send any encrypted data after it processes a “psk” token unless it has previously sent an ephemeral public key (an “e” token), either before or after the “psk” token.<br>This rule guarantees that a k derived from a PSK will never be used for encryption unless it has also been randomized by MixKey(e.public_key) using a self-chosen ephemeral public key.</p>
+<p>9.4. Pattern modifiers</p>
+<p>To indicate PSK mode and the placement of the “psk” token, pattern modifiers are used (see Section 8). The modifier psk0 places a “psk” token at the beginning of the first handshake message. The modifiers psk1, psk2, etc., place a “psk” token at the end of the first, second, etc., handshake message.</p>
+<p>Any pattern using one of these modifiers must process tokens according to the rules in Section 9.2, and must follow the validity rule in Section 9.3.</p>
+<p>The table below lists some unmodified one-way patterns on the left, and the recommended PSK pattern on the right:</p>
+<p>N:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>   Npsk0:<br>     &lt;- s<br>     …<br>     -&gt; psk, e, es<br>K:<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es, ss<br>   Kpsk0:<br>     -&gt; s<br>     &lt;- s<br>     …<br>     -&gt; psk, e, es, ss<br>X:<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss<br>   Xpsk1:<br>     &lt;- s<br>     …<br>     -&gt; e, es, s, ss, psk<br>Note that the psk1 modifier is recommended for X. This is because X transmits the initiator’s static public key. Because PSKs are typically pairwise, the responder likely cannot determine the PSK until it has decrypted the initiator’s static public key. Thus, psk1 is likely to be more useful here than psk0.</p>
+<p>Following similar logic, we can define the most likely interactive PSK patterns:</p>
+<p>NN:<br>  -&gt; e<br>  &lt;- e, ee<br>NNpsk0:<br>  -&gt; psk, e<br>  &lt;- e, ee<br>NN:<br>  -&gt; e<br>  &lt;- e, ee<br>NNpsk2:<br>  -&gt; e<br>  &lt;- e, ee, psk<br>NK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>NKpsk0:<br>  &lt;- s<br>  …<br>  -&gt; psk, e, es<br>  &lt;- e, ee<br>NK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>NKpsk2:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee, psk<br>NX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br> NXpsk2:<br>   -&gt; e<br>   &lt;- e, ee, s, es, psk<br>XN:<br>  -&gt; e<br>  &lt;- e, ee<br>  -&gt; s, se<br> XNpsk3:<br>   -&gt; e<br>   &lt;- e, ee<br>   -&gt; s, se, psk<br>XK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>  -&gt; s, se<br> XKpsk3:<br>   &lt;- s<br>   …<br>   -&gt; e, es<br>   &lt;- e, ee<br>   -&gt; s, se, psk<br>XX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>  -&gt; s, se<br> XXpsk3:<br>   -&gt; e<br>   &lt;- e, ee, s, es<br>   -&gt; s, se, psk<br>KN:<br>  -&gt; s<br>  …<br>  -&gt; e<br>  &lt;- e, ee, se<br>  KNpsk0:<br>    -&gt; s<br>    …<br>    -&gt; psk, e<br>    &lt;- e, ee, se<br>KN:<br>  -&gt; s<br>  …<br>  -&gt; e<br>  &lt;- e, ee, se<br>  KNpsk2:<br>    -&gt; s<br>    …<br>    -&gt; e<br>    &lt;- e, ee, se, psk<br>KK:<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es, ss<br>  &lt;- e, ee, se<br>  KKpsk0:<br>    -&gt; s<br>    &lt;- s<br>    …<br>    -&gt; psk, e, es, ss<br>    &lt;- e, ee, se<br>KK:<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es, ss<br>  &lt;- e, ee, se<br>  KKpsk2:<br>    -&gt; s<br>    &lt;- s<br>    …<br>    -&gt; e, es, ss<br>    &lt;- e, ee, se, psk<br>KX:<br>  -&gt; s<br>  …<br>  -&gt; e<br>  &lt;- e, ee, se, s, es<br>   KXpsk2:<br>     -&gt; s<br>     …<br>     -&gt; e<br>     &lt;- e, ee, se, s, es, psk<br>IN:<br>  -&gt; e, s<br>  &lt;- e, ee, se<br>   INpsk1:<br>     -&gt; e, s, psk<br>     &lt;- e, ee, se<br>IN:<br>  -&gt; e, s<br>  &lt;- e, ee, se<br>   INpsk2:<br>     -&gt; e, s<br>     &lt;- e, ee, se, psk<br>IK:<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss<br>  &lt;- e, ee, se<br>   IKpsk1:<br>     &lt;- s<br>     …<br>     -&gt; e, es, s, ss, psk<br>     &lt;- e, ee, se<br>IK:<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss<br>  &lt;- e, ee, se<br>   IKpsk2:<br>     &lt;- s<br>     …<br>     -&gt; e, es, s, ss<br>     &lt;- e, ee, se, psk<br>IX:<br>  -&gt; e, s<br>  &lt;- e, ee, se, s, es<br>   IXpsk2:<br>     -&gt; e, s<br>     &lt;- e, ee, se, s, es, psk<br>The above list does not exhaust all possible patterns that can be formed with these modifiers. In particular, any of these PSK modifiers can be safely applied to any previously named pattern, resulting in patterns like IKpsk0, KKpsk1, or even XXpsk0+psk3, which aren’t listed above.</p>
+<p>This still doesn’t exhaust all the ways that “psk” tokens could be used outside of these modifiers (e.g. placement of “psk” tokens in the middle of a message pattern). Defining additional PSK modifiers is outside the scope of this document.</p>
+<h1 id="复合协议"><a href="#复合协议" class="headerlink" title="复合协议"></a>复合协议</h1><p>10.1. Rationale for compound protocols</p>
+<p>So far we’ve assumed Alice and Bob wish to execute a single Noise protocol chosen by the initiator (Alice). However, there are a number of reasons why Bob might wish to switch to a different Noise protocol after receiving Alice’s first message. For example:</p>
+<p>Alice might have chosen a Noise protocol based on a cipher, DH function, or handshake pattern which Bob doesn’t support.</p>
+<p>Alice might have sent a “zero-RTT” encrypted initial message based on an out-of-date version of Bob’s static public key or PSK.</p>
+<p>Handling these scenarios requires a compound protocol where Bob switches from the initial Noise protocol chosen by Alice to a new Noise protocol. In such a compound protocol the roles of initiator and responder would be reversed - Bob would become the initiator of the new Noise protocol, and Alice the responder.</p>
+<p>Compound protocols introduce significant complexity as Alice needs to advertise the Noise protocol she is beginning with and the Noise protocol(s) she is capable of switching to, and both parties have to negotiate a secure transition.</p>
+<p>These details are largely out of scope for this document. However, to give an example of how compound protocols can be constructed, and to provide some building blocks, the following sections define a fallback modifier and show how it can be used to create a Noise Pipe compound protocol.</p>
+<p>Noise Pipes support the XX pattern, but also allow Alice to cache Bob’s static public key and attempt an IK handshake with 0-RTT encryption.</p>
+<p>In case Bob can’t decrypt Alice’s initial IK message, he will switch to the XXfallback pattern, which essentially allows the parties to complete an XX handshake as if Alice had sent an XX initial message instead of an IK initial message.</p>
+<p>10.2. The fallback modifier</p>
+<p>The fallback modifier converts an Alice-initiated pattern to a Bob-initiated pattern by converting Alice’s initial message to a pre-message that Bob must receive through some other means (e.g. via an initial IK message from Alice). After this conversion, the rest of the handshake pattern is interpreted as a Bob-initiated handshake pattern.</p>
+<p>For example, here is the fallback modifier applied to XX to produce XXfallback:</p>
+<p>XX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>  -&gt; s, se</p>
+<p>XXfallback:<br>  -&gt; e<br>  …<br>  &lt;- e, ee, s, es<br>  -&gt; s, se<br>Note that fallback can only be applied to handshake patterns in Alice-initiated form where Alice’s first message is capable of being interpreted as a pre-message (i.e. it must be either  “e”, “s”, or “e, s”).</p>
+<p>10.3. Zero-RTT and Noise protocols</p>
+<p>A typical compound protocol for zero-RTT encryption involves three different Noise protocols:</p>
+<p>A full protocol is used if Alice doesn’t possess stored information about Bob that would enable zero-RTT encryption, or doesn’t wish to use the zero-RTT handshake.</p>
+<p>A zero-RTT protocol allows encryption of data in the initial message.</p>
+<p>A switch protocol is triggered by Bob if he can’t decrypt Alice’s first zero-RTT handshake message.</p>
+<p>There must be some way for Bob to distinguish the full versus zero-RTT cases on receiving the first message. If Alice makes a zero-RTT attempt, there must be some way for her to distinguish the zero-RTT versus switch cases on receiving the response.</p>
+<p>For example, each handshake message could be preceded by some negotiation data, such as a type byte (see Section 13). This data is not part of the Noise message proper, but signals which Noise protocol is being used.</p>
+<p>10.4. Noise Pipes</p>
+<p>This section defines the Noise Pipe compound protocol. The following handshake patterns satisfy the full, zero-RTT, and switch roles discussed in the previous section, so can be used to provide a full handshake with a simple zero-RTT option:</p>
+<p>XX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>  -&gt; s, se</p>
+<p>IK:<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss<br>  &lt;- e, ee, se</p>
+<p>XXfallback:<br>  -&gt; e<br>  …<br>  &lt;- e, ee, s, es<br>  -&gt; s, se<br>The XX pattern is used for a full handshake if the parties haven’t communicated before, after which Alice can cache Bob’s static public key.</p>
+<p>The IK pattern is used for a zero-RTT handshake.</p>
+<p>The XXfallback pattern is used for a switch handshake if Bob fails to decrypt an initial IK message (perhaps due to having changed his static key).</p>
+<p>10.5. Handshake indistinguishability</p>
+<p>Parties might wish to hide from an eavesdropper which type of handshake they are performing. For example, suppose parties are using Noise Pipes, and want to hide whether they are performing a full handshake, zero-RTT handshake, or fallback handshake.</p>
+<p>This is fairly easy:</p>
+<p>The first three messages can have their payloads padded with random bytes to a constant size, regardless of which handshake is executed.</p>
+<p>Bob will attempt to decrypt the first message as an IK message, and will switch to  XXfallback if decryption fails.</p>
+<p>An Alice who sends an IK initial message can use trial decryption to differentiate between a response using IK or XXfallback.</p>
+<p>An Alice attempting a full handshake will send an ephemeral public key, then random padding, and will use XXfallback to handle the response. Note that XX isn’t used, because the server can’t distinguish an XX message from a failed IK attempt by using trial decryption.</p>
+<p>This leaves the Noise ephemeral public keys in the clear. Ephemeral public keys are randomly chosen DH public values, but they will typically have enough structure that an eavesdropper might suspect the parties are using Noise, even if the eavesdropper can’t distinguish the different handshakes. To make the ephemerals indistinguishable from random byte sequences, techniques like Elligator [5] could be used.</p>
+<ol start="11">
+<li>Advanced features</li>
+</ol>
+<p>11.1. Dummy keys</p>
+<p>Consider a protocol where an initiator will authenticate herself if the responder requests it. This could be viewed as the initiator choosing between patterns like NX and XX based on some value inside the responder’s first handshake payload.</p>
+<p>Noise doesn’t directly support this. Instead, this could be simulated by always executing XX. The initiator can simulate the NX case by sending a dummy static public key if authentication is not requested. The value of the dummy public key doesn’t matter.</p>
+<p>This technique is simple, since it allows use of a single handshake pattern. It also doesn’t reveal which option was chosen from message sizes or computation time. It could be extended to allow an XX pattern to support any permutation of authentications (initiator only, responder only, both, or none).</p>
+<p>Similarly, dummy PSKs (e.g. a PSK of all zeros) would allow a protocol to optionally support PSKs.</p>
+<p>11.2. Channel binding</p>
+<p>Parties might wish to execute a Noise protocol, then perform authentication at the application layer using signatures, passwords, or something else.</p>
+<p>To support this, Noise libraries may call GetHandshakeHash() after the handshake is complete and expose the returned value to the application as a handshake hash which uniquely identifies the Noise session.</p>
+<p>Parties can then sign the handshake hash, or hash it along with their password, to get an authentication token which has a “channel binding” property: the token can’t be used by the receiving party with a different sesssion.</p>
+<p>11.3. Rekey</p>
+<p>Parties might wish to periodically update their cipherstate keys using a one-way function, so that a compromise of cipherstate keys will not decrypt older messages. Periodic rekey might also be used to reduce the volume of data encrypted under a single cipher key (this is usually not important with good ciphers, though note the discussion on AESGCM data volumes in Section 14).</p>
+<p>To enable this, Noise supports a Rekey() function which may be called on a CipherState.</p>
+<p>It is up to to the application if and when to perform rekey. For example:</p>
+<p>Applications might perform continuous rekey, where they rekey the relevant cipherstate after every transport message sent or received. This is simple and gives good protection to older ciphertexts, but might be difficult for implementations where changing keys is expensive.</p>
+<p>Applications might rekey a cipherstate automatically after it has has been used to send or receive some number of messages.</p>
+<p>Applications might choose to rekey based on arbitrary criteria, in which case they signal this to the other party by sending a message.</p>
+<p>Applications must make these decisions on their own; there are no pattern modifiers which specify rekey behavior.</p>
+<p>Note that rekey only updates the cipherstate’s k value, it doesn’t reset the cipherstate’s n value, so applications performing rekey must still perform a new handshake if sending 264 or more transport messages.</p>
+<p>11.4. Out-of-order transport messages</p>
+<p>In some use cases, Noise transport messages might be lost or arrive out-of-order (e.g. when messages are sent over UDP). To handle this, an application protocol can send the n value used for encrypting each transport message alongside that message. On receiving such a message the recipient would call the SetNonce() function on the receiving CipherState using the received n value.</p>
+<p>Recipients doing this must track the received n values for which decryption was successful and reject any message which repeats such a value, to prevent replay attacks.</p>
+<p>Note that lossy and out-of-order message delivery introduces many other concerns (including out-of-order handshake messages and denial of service risks) which are outside the scope of this document.</p>
+<p>11.5. Half-duplex protocols</p>
+<p>In some application protocols the parties strictly alternate sending messages. In this case Noise can be used in a half-duplex mode [6] where the first CipherState returned by Split() is used for encrypting messages in both directions, and the second CipherState returned by  Split() is unused. This allows some small optimizations, since Split() only has to calculate a single output CipherState, and both parties only need to store a single CipherState during the transport phase.</p>
+<p>This feature must be used with extreme caution. In particular, it would be a catastrophic security failure if the protocol is not strictly alternating and both parties encrypt different messages using the same CipherState and nonce value.</p>
+<ol start="12">
+<li>DH functions, cipher functions, and hash functions</li>
+</ol>
+<p>12.1. The 25519 DH functions</p>
+<p>GENERATE_KEYPAIR(): Returns a new Curve25519 key pair.</p>
+<p>DH(keypair, public_key): Executes the Curve25519 DH function (aka “X25519” in [7]). Invalid public key values will produce an output of all zeros.</p>
+<p>Alternatively, implementations are allowed to detect inputs that produce an all-zeros output and signal an error instead. This behavior is discouraged because it adds complexity and implementation variance, and does not improve security. This behavior is allowed because it might match the behavior of some software.</p>
+<p>DHLEN = 32</p>
+<p>12.2. The 448 DH functions</p>
+<p>GENERATE_KEYPAIR(): Returns a new Curve448 key pair.</p>
+<p>DH(keypair, public_key): Executes the Curve448 DH function (aka “X448” in [7]). Invalid public key values will produce an output of all zeros.</p>
+<p>Alternatively, implementations are allowed to detect inputs that produce an all-zeros output and signal an error instead. This behavior is discouraged because it adds complexity and implementation variance, and does not improve security. This behavior is allowed because it might match the behavior of some software.</p>
+<p>DHLEN = 56</p>
+<p>12.3. The ChaChaPoly cipher functions</p>
+<p>ENCRYPT(k, n, ad, plaintext) / DECRYPT(k, n, ad, ciphertext):  AEAD_CHACHA20_POLY1305 from [8]. The 96-bit nonce is formed by encoding 32 bits of zeros followed by little-endian encoding of n. (Earlier implementations of ChaCha20 used a 64-bit nonce; with these implementations it’s compatible to encode n directly into the ChaCha20 nonce without the 32-bit zero prefix).<br>12.4. The AESGCM cipher functions</p>
+<p>ENCRYPT(k, n, ad, plaintext) / DECRYPT(k, n, ad, ciphertext): AES256 with GCM from [9] with a 128-bit tag appended to the ciphertext. The 96-bit nonce is formed by encoding 32 bits of zeros followed by big-endian encoding of n.<br>12.5. The SHA256 hash function</p>
+<p>HASH(input): SHA-256 from [10].<br>HASHLEN = 32<br>BLOCKLEN = 64<br>12.6. The SHA512 hash function</p>
+<p>HASH(input): SHA-512 from [10].<br>HASHLEN = 64<br>BLOCKLEN = 128<br>12.7. The BLAKE2s hash function</p>
+<p>HASH(input): BLAKE2s from [11] with digest length 32.<br>HASHLEN = 32<br>BLOCKLEN = 64<br>12.8. The BLAKE2b hash function</p>
+<p>HASH(input): BLAKE2b from [11] with digest length 64.<br>HASHLEN = 64<br>BLOCKLEN = 128<br>13. Application responsibilities</p>
+<p>An application built on Noise must consider several issues:</p>
+<p>Choosing crypto functions: The 25519 DH functions are recommended for typical uses, though the 448 DH functions might offer extra security in case a cryptanalytic attack is developed against elliptic curve cryptography. The 448 DH functions should be used with a 512-bit hash like SHA512 or BLAKE2b. The 25519 DH functions may be used with a 256-bit hash like SHA256 or BLAKE2s, though a 512-bit hash might offer extra security in case a cryptanalytic attack is developed against the smaller hash functions. AESGCM is hard to implement with high speed and constant time in software.</p>
+<p>Extensibility: Applications are recommended to use an extensible data format for the payloads of all messages (e.g. JSON, Protocol Buffers). This ensures that fields can be added in the future which are ignored by older implementations.</p>
+<p>Padding: Applications are recommended to use a data format for the payloads of all encrypted messages that allows padding. This allows implementations to avoid leaking information about message sizes. Using an extensible data format, per the previous bullet, may be sufficient.</p>
+<p>Session termination: Applications must consider that a sequence of Noise transport messages could be truncated by an attacker. Applications should include explicit length fields or termination signals inside of transport payloads to signal the end of an interactive session, or the end of a one-way stream of transport messages.</p>
+<p>Length fields: Applications must handle any framing or additional length fields for Noise messages, considering that a Noise message may be up to 65535 bytes in length. If an explicit length field is needed, applications are recommended to add a 16-bit big-endian length field prior to each message.</p>
+<p>Negotiation data: Applications might wish to support the transmission of some negotiation data prior to the handshake, and/or prior to each handshake message. Negotiation data could contain things like version information and identifiers for Noise protocols. For example, a simple approach would be to send a single-byte type field prior to each Noise handshake message. More flexible approaches might send extensible structures such as protobufs. Negotiation data introduces significant complexity and security risks such as rollback attacks (see next section).</p>
+<ol start="14">
+<li>Security considerations</li>
+</ol>
+<p>This section collects various security considerations:</p>
+<p>Authentication: A Noise protocol with static public keys verifies that the corresponding private keys are possessed by the participant(s), but it’s up to the application to determine whether the remote party’s static public key is acceptable. Methods for doing so include certificates which sign the public key (and which may be passed in handshake payloads), preconfigured lists of public keys, or “pinning” / “key-continuity” approaches where parties remember public keys they encounter and check whether the same party presents the same public key in the future.</p>
+<p>Session termination: Preventing attackers from truncating a stream of transport messages is an application responsibility. See previous section.</p>
+<p>Rollback: If parties decide on a Noise protocol based on some previous negotiation that is not included as prologue, then a rollback attack might be possible. This is a particular risk with compound protocols, and requires careful attention if a Noise handshake is preceded by communication between the parties.</p>
+<p>Static key reuse: A static key pair used with Noise should be used with a single hash algorithm. The key pair should not be used outside of Noise, nor with multiple hash algorithms. It is acceptable to use the static key pair with different Noise protocols, provided the same hash algorithm is used in all of them. (Reusing a Noise static key pair outside of Noise would require extremely careful analysis to ensure the uses don’t compromise each other, and security proofs are preserved).</p>
+<p>PSK reuse: A PSK used with Noise should be used with a single hash algorithm. The PSK should not be used outside of Noise, nor with multiple hash algorithms.</p>
+<p>Ephemeral key reuse: Every party in a Noise protocol must send a fresh ephemeral public key prior to sending any encrypted data. Ephemeral keys must never be reused. Violating these rules is likely to cause catastrophic key reuse. This is one rationale behind the patterns in Section 7, and the validity rules in Section 7.3. It’s also the reason why one-way handshakes only allow transport messages from the sender, not the recipient.</p>
+<p>Misusing public keys as secrets: It might be tempting to use a pattern with a pre-message public key and assume that a successful handshake implies the other party’s knowledge of the public key. Unfortunately, this is not the case, since setting public keys to invalid values might cause predictable DH output. For example, a Noise_NK_25519 initiator might send an invalid ephemeral public key to cause a known DH output of all zeros, despite not knowing the responder’s static public key. If the parties want to authenticate with a shared secret, it should be used as a PSK.</p>
+<p>Channel binding: Depending on the DH functions, it might be possible for a malicious party to engage in multiple sessions that derive the same shared secret key by setting public keys to invalid values that cause predictable DH output (as in the previous bullet). It might also be possible to set public keys to equivalent values that cause the same DH output for different inputs. This is why a higher-level protocol should use the handshake hash (h) for a unique channel binding, instead of ck, as explained in Section 11.2.</p>
+<p>Incrementing nonces: Reusing a nonce value for n with the same key k for encryption would be catastrophic. Implementations must carefully follow the rules for nonces. Nonces are not allowed to wrap back to zero due to integer overflow, and the maximum nonce value is reserved. This means parties are not allowed to send more than 264-1 transport messages.</p>
+<p>Protocol names: The protocol name used with Initialize() must uniquely identify the combination of handshake pattern and crypto functions for every key it’s used with (whether ephemeral key pair, static key pair, or PSK). If the same secret key was reused with the same protocol name but a different set of cryptographic operations then bad interactions could occur.</p>
+<p>Pre-shared symmetric keys: Pre-shared symmetric keys must be secret values with 256 bits of entropy.</p>
+<p>Data volumes: The AESGCM cipher functions suffer a gradual reduction in security as the volume of data encrypted under a single key increases. Due to this, parties should not send more than 256 bytes (roughly 72 petabytes) encrypted by a single key. If sending such large volumes of data is a possibility then different cipher functions should be chosen.</p>
+<p>Hash collisions: If an attacker can find hash collisions on prologue data or the handshake hash, they may be able to perform “transcript collision” attacks that trick the parties into having different views of handshake data. It is important to use Noise with collision-resistant hash functions, and replace the hash function at any sign of weakness.</p>
+<p>Implementation fingerprinting: If this protocol is used in settings with anonymous parties, care should be taken that implementations behave identically in all cases. This may require mandating exact behavior for handling of invalid DH public keys.</p>
+<ol start="15">
+<li>Rationales</li>
+</ol>
+<p>This section collects various design rationales.</p>
+<p>15.1. Ciphers and encryption</p>
+<p>Cipher keys and PSKs are 256 bits because:</p>
+<p>256 bits is a conservative length for cipher keys when considering cryptanalytic safety margins, time/memory tradeoffs, multi-key attacks, rekeying, and quantum attacks.</p>
+<p>Pre-shared key length is fixed to simplify testing and implementation, and to deter users from mistakenly using low-entropy passwords as pre-shared keys.</p>
+<p>Nonces are 64 bits because:</p>
+<p>Some ciphers only have 64 bit nonces (e.g. Salsa20).</p>
+<p>64 bit nonces were used in the initial specification and implementations of ChaCha20, so Noise nonces can be used with these implementations.</p>
+<p>64 bits makes it easy for the entire nonce to be treated as an integer and incremented.</p>
+<p>96 bits nonces (e.g. in RFC 7539) are a confusing size where it’s unclear if random nonces are acceptable.</p>
+<p>The authentication data in a ciphertext (i.e. the authentication tag or synthetic IV) is 128 bits because:</p>
+<p>Some algorithms (e.g. GCM) lose more security than an ideal MAC when truncated.</p>
+<p>Noise may be used in a wide variety of contexts, including where attackers can receive rapid feedback on whether guesses for authentication data are correct.</p>
+<p>A single fixed length is simpler than supporting variable-length tags.</p>
+<p>Ciphertexts are required to be indistinguishable from random because:</p>
+<p>This makes Noise protocols easier to use with random padding (for length-hiding), or for censorship-resistant “unfingerprintable” protocols, or with steganography. However note that ephemeral keys are likely to be distinguishable from random unless a technique such as Elligator [5] is used.<br>Rekey defaults to using encryption with the nonce 264-1 because:</p>
+<p>With AESGCM and ChaChaPoly rekey can be computed efficiently (the “encryption” just needs to apply the cipher, and can skip calculation of the authentication tag).<br>Rekey doesn’t reset n to zero because:</p>
+<p>Leaving n unchanged is simple.</p>
+<p>If the cipher has a weakness such that repeated rekeying gives rise to a cycle of keys, then letting n advance will avoid catastrophic reuse of the same k and n values.</p>
+<p>Letting n advance puts a bound on the total number of encryptions that can be performed with a set of derived keys.</p>
+<p>The AESGCM data volume limit is 256 bytes because:</p>
+<p>This is 252 AES blocks (each block is 16 bytes). The limit is based on the risk of birthday collisions being used to rule out plaintext guesses. The probability an attacker could rule out a random guess on a 256 byte plaintext is less than 1 in 1 million (roughly (252 * 252) / 2128).<br>Cipher nonces are big-endian for AESGCM, and little-endian for ChaCha20, because:</p>
+<p>ChaCha20 uses a little-endian block counter internally.</p>
+<p>AES-GCM uses a big-endian block counter internally.</p>
+<p>It makes sense to use consistent endianness in the cipher code.</p>
+<p>15.2. Hash functions and hashing</p>
+<p>The recommended hash function families are SHA2 and BLAKE2 because:</p>
+<p>SHA2 is widely available and is often used alongside AES.</p>
+<p>BLAKE2 is fast and similar to ChaCha20.</p>
+<p>Hash output lengths of both 256 bits and 512 bits are supported because:</p>
+<p>256-bit hashes provide sufficient collision resistance at the 128-bit security level.</p>
+<p>The 256-bit hashes (SHA-256 and BLAKE2s) require less RAM, and less computation when processing smaller inputs (due to smaller block size), than SHA-512 and BLAKE2b.</p>
+<p>SHA-256 and BLAKE2s are faster on 32-bit processors than the larger hashes, which use 64-bit operations internally.</p>
+<p>The MixKey() design uses HKDF because:</p>
+<p>HKDF is well-known and HKDF “chains” are used in similar ways in other protocols (e.g. Signal, IPsec, TLS 1.3).</p>
+<p>HKDF has a published analysis [12].</p>
+<p>HKDF applies multiple layers of hashing between each MixKey() input. This “extra” hashing might mitigate the impact of hash function weakness.</p>
+<p>HMAC is used with all hash functions instead of allowing hashes to use a more specialized function (e.g. keyed BLAKE2), because:</p>
+<p>HKDF requires the use of HMAC, and some of the HKDF analysis in [12] depends on the nested structure of HMAC.</p>
+<p>HMAC is widely used with Merkle-Damgard hashes such as SHA2. SHA3 candidates such as Keccak and BLAKE were required to be suitable with HMAC. Thus, HMAC should be applicable to all widely-used hash functions.</p>
+<p>HMAC applies nested hashing to process each input. This “extra” hashing might mitigate the impact of hash function weakness.</p>
+<p>HMAC (and HKDF) are widely-used constructions. If some weakness is found in a hash function, cryptanalysts will likely analyze that weakness in the context of HMAC and HKDF.</p>
+<p>Applying HMAC consistently is simple, and avoids having custom designs with different cryptanalytic properties when using different hash functions.</p>
+<p>HMAC is easy to build on top of a hash function interface. If a more specialized function (e.g. keyed BLAKE2) can’t be implemented using only the underlying hash, then it is not guaranteed to be available everywhere the hash function is available.</p>
+<p>MixHash() is used instead of sending all inputs directly through MixKey() because:</p>
+<p>MixHash() is more efficient than MixKey().</p>
+<p>MixHash() produces a non-secret h value that might be useful to higher-level protocols, e.g. for channel-binding.</p>
+<p>The h value hashes handshake ciphertext instead of plaintext because:</p>
+<p>This ensures h is a non-secret value that can be used for channel-binding or other purposes without leaking secret information.</p>
+<p>This provides stronger guarantees against ciphertext malleability.</p>
+<p>15.3. Other</p>
+<p>Big-endian length fields are recommended because:</p>
+<p>Length fields are likely to be handled by parsing code where big-endian “network byte order” is traditional.</p>
+<p>Some ciphers use big-endian internally (e.g. GCM, SHA2).</p>
+<p>While it’s true that Curve25519, Curve448, and ChaCha20/Poly1305 use little-endian, these will likely be handled by specialized libraries, so there’s not a strong argument for aligning with them.</p>
+<p>Session termination is left to the application because:</p>
+<p>Providing a termination signal in Noise doesn’t help the application much, since the application still has to use the signal correctly.</p>
+<p>For an application with its own termination signal, having a second termination signal in Noise is likely to be confusing rather than helpful.</p>
+<p>Explicit random nonces (like TLS “Random” fields) are not used because:</p>
+<p>One-time ephemeral public keys make explicit nonces unnecessary.</p>
+<p>Explicit nonces allow reuse of ephemeral public keys. However reusing ephemerals (with periodic replacement) is more complicated, requires a secure time source, is less secure in case of ephemeral compromise, and only provides a small optimization, since key generation can be done for a fraction of the cost of a DH operation.</p>
+<p>Explicit nonces increase message size.</p>
+<p>Explicit nonces make it easier to “backdoor” crypto implementations, e.g. by modifying the RNG so that key recovery data is leaked through the nonce fields.</p>
+<ol start="16">
+<li>IPR</li>
+</ol>
+<p>The Noise specification (this document) is hereby placed in the public domain.</p>
+<ol start="17">
+<li>Acknowledgements</li>
+</ol>
+<p>Noise is inspired by:</p>
+<p>The NaCl and CurveCP protocols from Dan Bernstein et al [13], [14].<br>The SIGMA and HOMQV protocols from Hugo Krawczyk [15], [16].<br>The Ntor protocol from Ian Goldberg et al [17].<br>The analysis of OTR by Mario Di Raimondo et al [18].<br>The analysis by Caroline Kudla and Kenny Paterson of “Protocol 4” by Simon Blake-Wilson et al [19], [20].<br>Mike Hamburg’s proposals for a sponge-based protocol framework, which led to STROBE [21], [22].<br>The KDF chains used in the Double Ratchet Algorithm [23].<br>General feedback on the spec and design came from: Moxie Marlinspike, Jason Donenfeld, Rhys Weatherley, Mike Hamburg, David Wong, Jake McGinty, Tiffany Bennett, Jonathan Rudenberg, Stephen Touset, Tony Arcieri, Alex Wied, Alexey Ermishkin, Olaoluwa Osuntokun, Karthik Bhargavan, and Nadim Kobeissi.</p>
+<p>Helpful editorial feedback came from: Tom Ritter, Karthik Bhargavan, David Wong, Klaus Hartke, Dan Burkert, Jake McGinty, Yin Guanhao, Nazar Mokrynskyi, Keziah Elis Biermann, Justin Cormack, Katriel Cohn-Gordon, and Nadim Kobeissi.</p>
+<p>Helpful input and feedback on the key derivation design came from: Moxie Marlinspike, Hugo Krawczyk, Samuel Neves, Christian Winnerlein, J.P. Aumasson, and Jason Donenfeld.</p>
+<p>The PSK approach was largely motivated and designed by Jason Donenfeld, based on his experience with PSKs in WireGuard.</p>
+<p>The deferred patterns resulted from discussions with Justin Cormack. The pattern derivation rules in the Appendix are also from Justin Cormack.</p>
+<p>The security properties table for deferred patterns was derived by the Noise Explorer tool, from Nadim Kobeissi.</p>
+<p>The rekey design benefited from discussions with Rhys Weatherley, Alexey Ermishkin, and Olaoluwa Osuntokun.</p>
+<p>The BLAKE2 team (in particular J.P. Aumasson, Samuel Neves, and Zooko) provided helpful discussion on using BLAKE2 with Noise.</p>
+<p>Jeremy Clark, Thomas Ristenpart, and Joe Bonneau gave feedback on earlier versions.</p>
+<ol start="18">
+<li>Appendices</li>
+</ol>
+<p>18.1. Deferred patterns</p>
+<p>The following table lists all 23 deferred handshake patterns in the right column, with their corresponding fundamental handshake pattern in the left column. See Section 7 for an explanation of fundamental and deferred patterns.</p>
+<p>NK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>    NK1:<br>      &lt;- s<br>      …<br>      -&gt; e<br>      &lt;- e, ee, es<br>NX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>    NX1:<br>      -&gt; e<br>      &lt;- e, ee, s<br>      -&gt; es<br>XN:<br>  -&gt; e<br>  &lt;- e, ee<br>  -&gt; s, se<br>    X1N:<br>      -&gt; e<br>      &lt;- e, ee<br>      -&gt; s<br>      &lt;- se<br>XK:<br>  &lt;- s<br>  …<br>  -&gt; e, es<br>  &lt;- e, ee<br>  -&gt; s, se<br>    X1K:<br>      &lt;- s<br>      …<br>      -&gt; e, es<br>      &lt;- e, ee<br>      -&gt; s<br>      &lt;- se</p>
+<pre><code>XK1:
+  &lt;- s
+  ...
+  -&gt; e
+  &lt;- e, ee, es
+  -&gt; s, se
+
+X1K1:
+  &lt;- s
+  ...
+  -&gt; e
+  &lt;- e, ee, es
+  -&gt; s
+  &lt;- se</code></pre><p>XX:<br>  -&gt; e<br>  &lt;- e, ee, s, es<br>  -&gt; s, se<br>    X1X:<br>      -&gt; e<br>      &lt;- e, ee, s, es<br>      -&gt; s<br>      &lt;- se</p>
+<pre><code>XX1:
+  -&gt; e
+  &lt;- e, ee, s
+  -&gt; es, s, se
+
+X1X1:
+  -&gt; e
+  &lt;- e, ee, s
+  -&gt; es, s
+  &lt;- se</code></pre><p>KN:<br>  -&gt; s<br>  …<br>  -&gt; e<br>  &lt;- e, ee, se<br>    K1N:<br>      -&gt; s<br>      …<br>      -&gt; e<br>      &lt;- e, ee<br>      -&gt; se<br>KK:<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es, ss<br>  &lt;- e, ee, se<br>    K1K:<br>      -&gt; s<br>      &lt;- s<br>      …<br>      -&gt; e, es<br>      &lt;- e, ee<br>      -&gt; se</p>
+<pre><code>KK1:
+  -&gt; s
+  &lt;- s
+  ...
+  -&gt; e
+  &lt;- e, ee, se, es
+
+K1K1:
+  -&gt; s
+  &lt;- s
+  ...
+  -&gt; e
+  &lt;- e, ee, es
+  -&gt; se</code></pre><p>KX:<br>  -&gt; s<br>  …<br>  -&gt; e<br>  &lt;- e, ee, se, s, es<br>    K1X:<br>      -&gt; s<br>      …<br>      -&gt; e<br>      &lt;- e, ee, s, es<br>      -&gt; se</p>
+<pre><code>KX1:
+  -&gt; s
+  ...
+  -&gt; e
+  &lt;- e, ee, se, s
+  -&gt; es
+
+K1X1:
+  -&gt; s
+  ...
+  -&gt; e
+  &lt;- e, ee, s
+  -&gt; se, es</code></pre><p>IN:<br>  -&gt; e, s<br>  &lt;- e, ee, se<br>    I1N:<br>      -&gt; e, s<br>      &lt;- e, ee<br>      -&gt; se<br>IK:<br>  &lt;- s<br>  …<br>  -&gt; e, es, s, ss<br>  &lt;- e, ee, se<br>    I1K:<br>      &lt;- s<br>      …<br>      -&gt; e, es, s<br>      &lt;- e, ee<br>      -&gt; se</p>
+<pre><code>IK1:
+  &lt;- s
+  ...
+  -&gt; e, s
+  &lt;- e, ee, se, es
+
+I1K1:
+  &lt;- s
+  ...
+  -&gt; e, s
+  &lt;- e, ee, es
+  -&gt; se</code></pre><p>IX:<br>  -&gt; e, s<br>  &lt;- e, ee, se, s, es<br>    I1X:<br>      -&gt; e, s<br>      &lt;- e, ee, s, es<br>      -&gt; se</p>
+<pre><code>IX1:
+  -&gt; e, s
+  &lt;- e, ee, se, s
+  -&gt; es
+
+I1X1:
+  -&gt; e, s
+  &lt;- e, ee, s
+  -&gt; se, es</code></pre><p>18.2. Security properties for deferred patterns</p>
+<p>The following table lists the the security properties for the Noise handshake and transport payloads for all the deferred patterns in the previous section. The security properties are labelled using the notation from Section 7.7.</p>
+<pre><code>Source         Destination</code></pre><p>NK1<br>  &lt;- s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, es              2                1<br>  -&gt;                        0                5<br>NX1<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s               0                1<br>  -&gt; es                     0                3<br>  -&gt;                        2                1<br>  &lt;-                        0                5<br>X1N<br>  -&gt; e                      0                0<br>  &lt;- e, ee                  0                1<br>  -&gt; s                      0                1<br>  &lt;- se                     0                3<br>  -&gt;                        2                1<br>X1K<br>  &lt;- s<br>  …<br>  -&gt; e, es                  0                2<br>  &lt;- e, ee                  2                1<br>  -&gt; s                      0                5<br>  &lt;- se                     2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>XK1<br>  &lt;- s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, es              2                1<br>  -&gt; s, se                  2                5<br>  &lt;-                        2                5<br>X1K1<br>  &lt;- s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, es              2                1<br>  -&gt; s                      0                5<br>  &lt;- se                     2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>X1X<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s, es           2                1<br>  -&gt; s                      0                5<br>  &lt;- se                     2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>XX1<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s               0                1<br>  -&gt; es, s, se              2                3<br>  &lt;-                        2                5<br>  -&gt;                        2                5<br>X1X1<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s               0                1<br>  -&gt; es, s                  0                3<br>  &lt;- se                     2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>K1N<br>  -&gt; s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee                  0                1<br>  -&gt; se                     2                1<br>  &lt;-                        0                5<br>K1K<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e, es                  0                2<br>  &lt;- e, ee, se              2                1<br>  -&gt; se                     2                5<br>  &lt;-                        2                5<br>KK1<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, se, es          2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>K1K1<br>  -&gt; s<br>  &lt;- s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, es              2                1<br>  -&gt; se                     2                5<br>  &lt;-                        2                5<br>K1X<br>  -&gt; s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s, es           2                1<br>  -&gt; se                     2                5<br>  &lt;-                        2                5<br>KX1<br>  -&gt; s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, se, s           0                3<br>  -&gt; es                     2                3<br>  &lt;-                        2                5<br>  -&gt;                        2                5<br>K1X1<br>  -&gt; s<br>  …<br>  -&gt; e                      0                0<br>  &lt;- e, ee, s               0                1<br>  -&gt; se, es                 2                3<br>  &lt;-                        2                5<br>  -&gt;                        2                5<br>I1N<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee                  0                1<br>  -&gt; se                     2                1<br>  &lt;-                        0                5<br>I1K<br>  &lt;- s<br>  …<br>  -&gt; e, es, s               0                2<br>  &lt;- e, ee                  2                1<br>  -&gt; se                     2                5<br>  &lt;-                        2                5<br>IK1<br>  &lt;- s<br>  …<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, se, es          2                3<br>  -&gt;                        2                5<br>  &lt;-                        2                5<br>I1K1<br>  &lt;- s<br>  …<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, es              2                1<br>  -&gt; se                     2                5<br>  &lt;-                        2                5<br>I1X<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, s, es           2                1<br>  -&gt; se                     2                5<br>  &lt;-                        2                5<br>IX1<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, se, s           0                3<br>  -&gt; es                     2                3<br>  &lt;-                        2                5<br>  -&gt;                        2                5<br>I1X1<br>  -&gt; e, s                   0                0<br>  &lt;- e, ee, s               0                1<br>  -&gt; se, es                 2                3<br>  &lt;-                        2                5<br>  -&gt;                        2                5<br>18.3. Pattern derivation rules</p>
+<p>The following rules were used to derive the one-way, fundamental, and deferred handshake patterns.</p>
+<p>First, populate the pre-message contents as defined by the pattern name.</p>
+<p>Next populate the initiator’s first message by applying the first rule from the below table which matches. Then delete the matching rule and repeat this process until no more rules can be applied. If this is a one-way pattern, it is now complete.</p>
+<p>Otherwise, populate the responder’s first message in the same way. Once no more responder rules can be applied, then switch to the initiator’s next message and repeat this process, switching messages until no more rules can be applied by either party.</p>
+<p>Initiator rules:</p>
+<p>Send “e”.<br>Perform “ee” if “e” has been sent, and received.<br>Perform “se” if “s” has been sent, and “e” received. If initiator authentication is deferred, skip this rule for the first message in which it applies, then mark the initiator authentication as non-deferred.<br>Perform “es” if “e” has been sent, and “s” received. If responder authentication is deferred, skip this rule for the first message in which it applies, then mark the responder authentication as non-deferred.<br>Perform “ss” if “s” has been sent, and received, and “es” has been performed, and this is the first message, and initiator authentication is not deferred.<br>Send “s” if this is the first message and initiator is “I” or one-way “X”.<br>Send “s” if this is not the first message and initiator is “X”.<br>Responder rules:</p>
+<p>Send “e”.<br>Perform “ee” if “e” has been sent, and received.<br>Perform “se” if “e” has been sent, and “s” received. If initiator authentication is deferred, skip this rule for the first message in which it applies, then mark the initiator authentication as non-deferred.<br>Perform “es” if “s” has been sent, and “e” received. If responder authentication is deferred, skip this rule for the first message in which it applies, then mark the responder authentication as non-deferred.<br>Send “s” if responder is “X”.<br>18.4. Change log</p>
+<p>Revision 34:</p>
+<p>Added official/unstable marking; the unstable only refers to the new deferred patterns, the rest of this document is considered stable.</p>
+<p>Clarified DH() definition so that the identity element is an invalid value (not a generator), thus may be rejected.</p>
+<p>Clarified ciphertext-indistinguishability requirement for AEAD schemes and added a rationale.</p>
+<p>Clarified the order of hashing pre-message public keys.</p>
+<p>Rewrote handshake patterns explanation for clarity.</p>
+<p>Added new validity rule to disallow repeating the same DH operation.</p>
+<p>Clarified the complex validity rule regarding ephemeral keys and key re-use.</p>
+<p>Removed parenthesized list of keys from pattern notation, as it was redundant.</p>
+<p>Added deferred patterns.</p>
+<p>Renamed “Authentication” and “Confidentiality” security properties to “Source” and “Destination” to avoid confusion.</p>
+<p>[SECURITY] Added a new identity-hiding property, and changed identity-hiding property 3 to discuss an identity equality-check attack.</p>
+<p>Replaced “fallback patterns” concept with Bob-initiated pattern notation.</p>
+<p>Rewrote section on compound protocols and pipes for clarity, including clearer distinction between “switch protocol” and “fallback patterns”.</p>
+<p>De-emphasized “type byte” suggestion, and added a more general discussion of negotiation data.</p>
+<p>[SECURITY] Added security considerations regarding static key reuse and PSK reuse.</p>
+<p>Added pattern derivation rules to Appendix.</p>
+<ol start="19">
+<li>References</li>
+</ol>
+<p>[1] P. Rogaway, “Authenticated-encryption with Associated-data,” in Proceedings of the 9th ACM Conference on Computer and Communications Security, 2002. <a href="http://web.cs.ucdavis.edu/~rogaway/papers/ad.pdf" target="_blank" rel="noopener">http://web.cs.ucdavis.edu/~rogaway/papers/ad.pdf</a></p>
+<p>[2] Okamoto, Tatsuaki and Pointcheval, David, “The Gap-Problems: A New Class of Problems for the Security of Cryptographic Schemes,” in Proceedings of the 4th International Workshop on Practice and Theory in Public Key Cryptography: Public Key Cryptography, 2001. <a href="https://www.di.ens.fr/~pointche/Documents/Papers/2001_pkc.pdf" target="_blank" rel="noopener">https://www.di.ens.fr/~pointche/Documents/Papers/2001_pkc.pdf</a></p>
+<p>[3] H. Krawczyk, M. Bellare, and R. Canetti, “HMAC: Keyed-Hashing for Message Authentication.” Internet Engineering Task Force; RFC 2104 (Informational); IETF, Feb-1997. <a href="http://www.ietf.org/rfc/rfc2104.txt" target="_blank" rel="noopener">http://www.ietf.org/rfc/rfc2104.txt</a></p>
+<p>[4] H. Krawczyk and P. Eronen, “HMAC-based Extract-and-Expand Key Derivation Function (HKDF).” Internet Engineering Task Force; RFC 5869 (Informational); IETF, May-2010. <a href="http://www.ietf.org/rfc/rfc5869.txt" target="_blank" rel="noopener">http://www.ietf.org/rfc/rfc5869.txt</a></p>
+<p>[5] D. J. Bernstein, M. Hamburg, A. Krasnova, and T. Lange, “Elligator: Elliptic-curve points indistinguishable from uniform random strings.” Cryptology ePrint Archive, Report 2013/325, 2013. <a href="http://eprint.iacr.org/2013/325" target="_blank" rel="noopener">http://eprint.iacr.org/2013/325</a></p>
+<p>[6] Markku-Juhani O. Saarinen, “Beyond Modes: Building a Secure Record Protocol from a Cryptographic Sponge Permutation.” Cryptology ePrint Archive, Report 2013/772, 2013. <a href="http://eprint.iacr.org/2013/772" target="_blank" rel="noopener">http://eprint.iacr.org/2013/772</a></p>
+<p>[7] A. Langley, M. Hamburg, and S. Turner, “Elliptic Curves for Security.” Internet Engineering Task Force; RFC 7748 (Informational); IETF, Jan-2016. <a href="http://www.ietf.org/rfc/rfc7748.txt" target="_blank" rel="noopener">http://www.ietf.org/rfc/rfc7748.txt</a></p>
+<p>[8] Y. Nir and A. Langley, “ChaCha20 and Poly1305 for IETF Protocols.” Internet Engineering Task Force; RFC 7539 (Informational); IETF, May-2015. <a href="http://www.ietf.org/rfc/rfc7539.txt" target="_blank" rel="noopener">http://www.ietf.org/rfc/rfc7539.txt</a></p>
+<p>[9] M. J. Dworkin, “SP 800-38D. Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC,” National Institute of Standards &amp; Technology, Gaithersburg, MD, United States, 2007. <a href="http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf" target="_blank" rel="noopener">http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf</a></p>
+<p>[10] NIST, “FIPS 180-4. Secure Hash Standard (SHS),” National Institute of Standards &amp; Technology, Gaithersburg, MD, United States, 2012. <a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf" target="_blank" rel="noopener">http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf</a></p>
+<p>[11] M.-J. Saarinen and J.-P. Aumasson, “The BLAKE2 Cryptographic Hash and Message Authentication Code (MAC).” Internet Engineering Task Force; RFC 7693 (Informational); IETF, Nov-2015. <a href="http://www.ietf.org/rfc/rfc7693.txt" target="_blank" rel="noopener">http://www.ietf.org/rfc/rfc7693.txt</a></p>
+<p>[12] H. Krawczyk, “‘Cryptographic extraction and key derivation: The hkdf scheme’.” Cryptology ePrint Archive, Report 2010/264, 2010. <a href="http://eprint.iacr.org/2010/264" target="_blank" rel="noopener">http://eprint.iacr.org/2010/264</a></p>
+<p>[13] D. J. Bernstein, T. Lange, and P. Schwabe, “NaCl: Networking and Cryptography Library.”. <a href="https://nacl.cr.yp.to/" target="_blank" rel="noopener">https://nacl.cr.yp.to/</a></p>
+<p>[14] D. J. Bernstein, “CurveCP: Usable security for the Internet.”. <a href="https://curvecp.org" target="_blank" rel="noopener">https://curvecp.org</a></p>
+<p>[15] H. Krawczyk, “SIGMA: The ‘SIGn-and-MAc’ Approach to Authenticated Diffie-Hellman and Its Use in the IKE Protocols,” in Advances in Cryptology - CRYPTO 2003, 2003. <a href="http://webee.technion.ac.il/~hugo/sigma.html" target="_blank" rel="noopener">http://webee.technion.ac.il/~hugo/sigma.html</a></p>
+<p>[16] S. Halevi and H. Krawczyk, “One-Pass HMQV and Asymmetric Key-Wrapping.” Cryptology ePrint Archive, Report 2010/638, 2010. <a href="http://eprint.iacr.org/2010/638" target="_blank" rel="noopener">http://eprint.iacr.org/2010/638</a></p>
+<p>[17] I. Goldberg, D. Stebila, and B. Ustaoglu, “Anonymity and One-way Authentication in Key Exchange Protocols,” Design, Codes, and Cryptography, vol. 67, no. 2, May 2013. <a href="http://cacr.uwaterloo.ca/techreports/2011/cacr2011-11.pdf" target="_blank" rel="noopener">http://cacr.uwaterloo.ca/techreports/2011/cacr2011-11.pdf</a></p>
+<p>[18] M. Di Raimondo, R. Gennaro, and H. Krawczyk, “Secure Off-the-record Messaging,” in Proceedings of the 2005 ACM Workshop on Privacy in the Electronic Society, 2005. <a href="http://www.dmi.unict.it/diraimondo/web/wp-content/uploads/papers/otr.pdf" target="_blank" rel="noopener">http://www.dmi.unict.it/diraimondo/web/wp-content/uploads/papers/otr.pdf</a></p>
+<p>[19] C. Kudla and K. G. Paterson, “Modular Security Proofs for Key Agreement Protocols,” in Advances in Cryptology - ASIACRYPT 2005: 11th International Conference on the Theory and Application of Cryptology and Information Security, 2005. <a href="http://www.isg.rhul.ac.uk/~kp/ModularProofs.pdf" target="_blank" rel="noopener">http://www.isg.rhul.ac.uk/~kp/ModularProofs.pdf</a></p>
+<p>[20] S. Blake-Wilson, D. Johnson, and A. Menezes, “Key agreement protocols and their security analysis,” in Crytography and Coding: 6th IMA International Conference Cirencester, UK, December 17–19, 1997 Proceedings, 1997. <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.387" target="_blank" rel="noopener">http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.387</a></p>
+<p>[21] M. Hamburg, “Key Exchange and DuplexWrap-like protocols.” <a href="mailto:Noise@moderncrypto.org">Noise@moderncrypto.org</a> Mailing List, 2015. <a href="https://moderncrypto.org/mail-archive/noise/2015/000098.html" target="_blank" rel="noopener">https://moderncrypto.org/mail-archive/noise/2015/000098.html</a></p>
+<p>[22] Mike Hamburg, “The STROBE protocol framework.” Cryptology ePrint Archive, Report 2017/003, 2017. <a href="http://eprint.iacr.org/2017/003" target="_blank" rel="noopener">http://eprint.iacr.org/2017/003</a></p>
+<p>[23] T. Perrin and M. Marlinspike, “The Double Ratchet Algorithm,” 2016. <a href="https://whispersystems.org/docs/specifications/doubleratchet/" target="_blank" rel="noopener">https://whispersystems.org/docs/specifications/doubleratchet/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/27/IPsec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="IPsec学习笔记">
+                <i class="fa fa-chevron-left"></i> IPsec学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/12/%E6%AF%9B%E6%A6%82%E9%A9%AC%E5%8E%9F%E6%80%BB%E5%A4%8D%E4%B9%A0/" rel="prev" title="毛概马原总复习">
+                毛概马原总复习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="陈潇" />
+            
+              <p class="site-author-name" itemprop="name">陈潇</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/iwannatobehappy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://845895322@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">2.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#术语"><span class="nav-number">2.1.</span> <span class="nav-text">术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#握手状态机概述"><span class="nav-number">2.2.</span> <span class="nav-text">握手状态机概述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#消息格式"><span class="nav-number">3.</span> <span class="nav-text">消息格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加密功能"><span class="nav-number">4.</span> <span class="nav-text">加密功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DH-functions"><span class="nav-number">4.1.</span> <span class="nav-text">DH functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cipher-functions"><span class="nav-number">4.2.</span> <span class="nav-text">Cipher functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数"><span class="nav-number">4.3.</span> <span class="nav-text">哈希函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加工规则"><span class="nav-number">5.</span> <span class="nav-text">加工规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CipherState"><span class="nav-number">5.1.</span> <span class="nav-text">CipherState</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SymmetricState"><span class="nav-number">5.2.</span> <span class="nav-text">SymmetricState</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandshakeState"><span class="nav-number">5.3.</span> <span class="nav-text">HandshakeState</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">6.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Handshake-patterns"><span class="nav-number">7.</span> <span class="nav-text">Handshake patterns</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Handshake-pattern-basics"><span class="nav-number">7.1.</span> <span class="nav-text">Handshake pattern basics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Alice-and-Bob"><span class="nav-number">7.2.</span> <span class="nav-text">Alice and Bob</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#握手模式有效性"><span class="nav-number">7.3.</span> <span class="nav-text">握手模式有效性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单向握手模式"><span class="nav-number">7.4.</span> <span class="nav-text">单向握手模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交互式握手模式（基本）"><span class="nav-number">7.5.</span> <span class="nav-text">交互式握手模式（基本）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交互式握手模式（延迟）"><span class="nav-number">7.6.</span> <span class="nav-text">交互式握手模式（延迟）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有效负载安全性属性"><span class="nav-number">7.7.</span> <span class="nav-text">有效负载安全性属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#身份隐藏"><span class="nav-number">7.8.</span> <span class="nav-text">身份隐藏</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#协议名称和修饰符"><span class="nav-number">8.</span> <span class="nav-text">协议名称和修饰符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复合协议"><span class="nav-number">9.</span> <span class="nav-text">复合协议</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈潇</span>
+
+  
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'oXGA1XzMIhhs9x4yNbf1DOge-gzGzoHsz',
+        appKey: 'JYRNnDQ1kh2RA7V2MYsSnRVR',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="协议," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="种菜园" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="无线网络术语简介 无线媒介（Wireless Medium）传输无线MAC帧的媒介，主要包括射频和红外两种，目前主要指射频 STA(Station)具有无线网卡的设备，比如：笔记本电脑、智能手机等 AP(Access Point)无线接入点，能为已经关联的STA提供DS服务 DS（Distributed System）一种用于将一组基本服务集（BSS）和集成局域网（LAN）互连以创建扩展服务集（E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无线网络协议">
+<meta property="og:url" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="种菜园">
+<meta property="og:description" content="无线网络术语简介 无线媒介（Wireless Medium）传输无线MAC帧的媒介，主要包括射频和红外两种，目前主要指射频 STA(Station)具有无线网卡的设备，比如：笔记本电脑、智能手机等 AP(Access Point)无线接入点，能为已经关联的STA提供DS服务 DS（Distributed System）一种用于将一组基本服务集（BSS）和集成局域网（LAN）互连以创建扩展服务集（E">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/802_11%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/QoS%E6%95%B0%E6%8D%AE%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/Frame_Control%E5%AD%97%E6%AE%B5.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/types_subtype.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E5%9C%B0%E5%9D%80%E5%9F%9Fcase1.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E5%9C%B0%E5%9D%80%E5%9F%9Fcase2.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E5%9C%B0%E5%9D%80%E5%9F%9Fcase3.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E6%8E%A7%E5%88%B6%E5%B8%A7RTS.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E6%8E%A7%E5%88%B6%E5%B8%A7CTS_ACK.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E6%8E%A7%E5%88%B6%E5%B8%A7PS_POLL.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E7%AE%A1%E7%90%86%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/%E5%BC%80%E6%94%BE%E7%B3%BB%E7%BB%9F%E8%AE%A4%E8%AF%81.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/PSK%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/WEP%E5%8A%A0%E5%AF%86%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/WEP%E5%8A%A0%E5%AF%86%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/TKIP%E6%80%BB%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/TKIP%E5%8A%A0%E5%AF%86%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/TKIP_MPDU%E7%94%9F%E6%88%90.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/WEP_Seed%E7%94%9F%E6%88%90.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/CCM%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/CCM%E8%AE%A4%E8%AF%81B_0.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/CCM%E5%AF%86%E9%92%A5%E6%B5%81%E7%94%9F%E6%88%90.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/CCM%E5%8A%A0%E5%AF%86%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/CCMP.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/CCMP_AAD.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/RSNA%E5%AF%86%E9%92%A5%E5%B1%82%E6%AC%A1.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/RSNA%E5%AF%86%E9%92%A5%E5%AF%BC%E5%87%BA.png">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/RSNA4-wayhandshake.png">
+<meta property="article:published_time" content="2019-12-21T16:02:36.000Z">
+<meta property="article:modified_time" content="2020-01-02T13:13:20.336Z">
+<meta property="article:author" content="陈潇">
+<meta property="article:tag" content="协议">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/802_11%E5%B8%A7%E6%A0%BC%E5%BC%8F.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iwannatobehappy.github.io/2019/12/22/无线网络协议/"/>
+
+
+
+
+
+  <title>无线网络协议 | 种菜园</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">种菜园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://iwannatobehappy.github.io/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陈潇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="种菜园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">无线网络协议</h1>
+        
+
+        <div class="post-meta">
+		  
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-22T00:02:36+08:00">
+                2019-12-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/12/22/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.8k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="无线网络术语简介"><a href="#无线网络术语简介" class="headerlink" title="无线网络术语简介"></a>无线网络术语简介</h1><ul>
+<li>无线媒介（Wireless Medium）<br>传输无线MAC帧的媒介，主要包括射频和红外两种，目前主要指射频</li>
+<li>STA(Station)<br>具有无线网卡的设备，比如：笔记本电脑、智能手机等</li>
+<li>AP(Access Point)<br>无线接入点，能为已经关联的STA提供DS服务</li>
+<li>DS（Distributed System）<br>一种用于将一组基本服务集（BSS）和集成局域网（LAN）互连以创建扩展服务集（ESS）的系统。</li>
+<li>SS （Service set），服务集<br>服务集是一组使用相同网络参数运行的无线网络设备。</li>
+<li>BSS(Basic Service Set)，基本服务集<br>基本服务集是具有相同介质访问特性（即射频、调制方案等）的设备单元，<br>包括: Independent BSS和Infrastructure </li>
+<li>BSSIndependent BSS<br>简称IBSS，联网无需AP参与，又称为ad-hoc BSS或者自组网络。</li>
+<li>Infrastructure BSS<br>一般来说，BSS就是指Infrastructure BSS，需要AP参与来构建网络。</li>
+</ul>
+<h1 id="WLAN工作原理"><a href="#WLAN工作原理" class="headerlink" title="WLAN工作原理"></a>WLAN工作原理</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>AP周期性发送Beacon帧，用于宣布其网络的存在和网络参数</li>
+<li>STA发送Probe Request帧主动探测某个AP</li>
+<li>STA发送认证请求，AP回复认证响应</li>
+<li>如果通过认证，STA发送关联请求，AP回复关联响应，实现STA和AP的关联</li>
+<li>STA和AP之间传输数据帧</li>
+</ul>
+<h2 id="基础数据帧格式"><a href="#基础数据帧格式" class="headerlink" title="基础数据帧格式"></a>基础数据帧格式</h2><p>WLAN由 IEEE 802.11定义，规范了MAC子层和PHY层。MAC子层体现为帧，因此需要了解802.11的帧格式<br><img src="802_11%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt=""></p>
+<ul>
+<li>MAC Header：包括帧控制（Frame Control）、时长（Duration）、地址（Address）等</li>
+<li>Frame Body：代表数据域。这部分内容的长度可变，其具体存储的内容由帧类型（type）和子类型（subtype）决定</li>
+<li>FCS：（Frame Check Sequence，帧校验序列）用于保障帧数据的完整性<br><img src="QoS%E6%95%B0%E6%8D%AE%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt=""><br>如果是QoS（Quality of Service）数据帧，还需要附加QoS Control字段。<br>如果是HT（High Throughput，一种用于提高无线网络传输速率的技术）数据帧，还需要附加HT Control字段。</li>
+</ul>
+<p>下面详细介绍报文中的字段</p>
+<ul>
+<li><p>Frame Control字段<br><img src="Frame_Control%E5%AD%97%E6%AE%B5.png" alt=""><br><strong>Protocol Version</strong>：代表802.11 MAC的版本号。目前的值是0。<br><strong>Type和Subtype</strong>：这两个字段用于指明MAC帧的类型。802.11中MAC帧可划分为三种类型，分别是control、data和management，每种类型的帧用于完成不同功能。具体如下图：<br>  <img src="types_subtype.png" alt=""><br><strong>To DS和From DS</strong>：只用在数据类型的帧中。<br><strong>More Fragments</strong>：表明数据是否分片。只支持data和management帧类型。<br><strong>Retry</strong>：如果该值为1，表明是重传包。<br><strong>Power Management</strong>：表明发送该帧的STA处于活跃模式还是处于省电模式。<br><strong>More Data</strong>：和省电模式有关。AP会为那些处于省电模式下的STA缓冲一些数据帧，而STA会定时查询是否有数据要接收。该参数表示AP中还有缓冲的数据帧。如果该值为0，表明STA已经接收完数据帧了。<br><strong>Protected Frame</strong>：表明数据是否加密。<br><strong>Order</strong>：指明接收端必须按顺序处理该帧。</p>
+</li>
+<li><p>地址域<br>MAC帧头中包含四种地址类型：</p>
+<ul>
+<li>Destination Address（DA）：用来描述MAC数据帧最终接收者（final recipient），可以是单播或组播地址。</li>
+<li>Source Address（SA）：用来描述最初发出MAC数据帧的STA地址。一般情况下都是单播地址。</li>
+<li>Transmitter Address（TA）：用于描述将MAC数据帧发送到无线媒介的实体的地址，可以是STA或者AP。</li>
+<li>Receiver Address（RA）：用于描述接收MAC数据帧的接收者地址，可以是STA或者AP。</li>
+</ul>
+<p>MAC帧头中包含四个地址域，其用法与FrameControl域中To/From DS flags相关：</p>
+<table>
+<thead>
+<tr>
+<th>To DS</th>
+<th>From DS</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>在同一IBSS中，从一个STA发给另一个STA的数据帧、管理帧或者控制帧</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>从一个DS出去的数据帧（AP向STA传递）</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>发往一个DS的数据帧（STA向AP传递）</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>从一个AP发往另一个AP的无线分布式系统帧（无线桥接模式）</td>
+</tr>
+</tbody></table>
+<p>原则是Address 1表示Receiver Address (RA)，Address 2表示 Transmitter Address（ TA），是发送器的地址，Address 3辅助用于接收器用来过滤的， Address 4用于无线桥接或Mesh BSS网络中。<br>下面给出相应的地址域用法：</p>
+<table>
+<thead>
+<tr>
+<th>To DS</th>
+<th>From DS</th>
+<th>Address 1</th>
+<th>Address 2</th>
+<th>Address 3</th>
+<th>Address 4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>RA=DA</td>
+<td>TA=SA</td>
+<td>BSSID</td>
+<td></td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>RA=DA</td>
+<td>TA=BSSID</td>
+<td>SA</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>RA=BSSID</td>
+<td>TA=SA</td>
+<td>DA</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>RA</td>
+<td>TA</td>
+<td>DA</td>
+<td>SA</td>
+</tr>
+</tbody></table>
+<p>看了上面两张表，肯定还是懵逼的。下面来看3个例子。好好体会SA、TA、DA和RA具体所指的意思。理解生成数据包和发送到无线媒介两个不同的地址区别，接收数据包和数据包目的地两个不同的地址区别。<br><img src="%E5%9C%B0%E5%9D%80%E5%9F%9Fcase1.png" alt=""><br><img src="%E5%9C%B0%E5%9D%80%E5%9F%9Fcase2.png" alt=""><br><img src="%E5%9C%B0%E5%9D%80%E5%9F%9Fcase3.png" alt=""><br>还没懂吗？那就多看几遍，SA生成，TA发送，RA接收，DA处理。一般来说都有重合，所以Address4只有最后一种情况会被使用。</p>
+</li>
+<li><p>Sequence Control<br>Sequence Control域长16位，前4位表示分片编号FN，后12位为帧顺序编号SN<br><strong>Fragment Number</strong>：用于控制分片帧。如果数据量过大，则MAC层会将其分片发送。每个分片帧都有对应的分片编号。<br><strong>Sequence Number</strong>：STA每次发送数据帧时都会设置一个帧顺序编号，控制帧没有帧顺序编号，重传帧不使用新的帧顺序编号。</p>
+</li>
+</ul>
+<h2 id="控制帧"><a href="#控制帧" class="headerlink" title="控制帧"></a>控制帧</h2><p>Frame Control的Type字段区分了802.11中三种帧类型，分别是控制帧、管理帧和数据帧。<br>控制帧得名于媒体访问控制（ Media AccessControl, MAC），用来控制对通信媒体的访问。控制帧通常与数据帧搭配使用，负责区域的清空、信道的取得以及载波监听的维护，并于收到数据时予以的应答，借此促进工作站间数据传输的可靠性。<br>下面介绍四种控制帧，其功能各不相同。</p>
+<h3 id="RTS（Request-To-Send）"><a href="#RTS（Request-To-Send）" class="headerlink" title="RTS（Request To Send）"></a>RTS（Request To Send）</h3><p>RTS用于申请无线媒介的使用时间，值为Duration，单位为微秒。其数据帧格式如下图所示（替代之前介绍的数据帧格式）<br><img src="%E6%8E%A7%E5%88%B6%E5%B8%A7RTS.png" alt=""></p>
+<h3 id="CTS（Clear-To-Send）"><a href="#CTS（Clear-To-Send）" class="headerlink" title="CTS（Clear To Send）"></a>CTS（Clear To Send）</h3><p>用于回复RTS帧。另外它被802.11g保护机制用来避免干扰旧的STA。其数据帧格式与ACK相同。</p>
+<h3 id="ACK"><a href="#ACK" class="headerlink" title="ACK"></a>ACK</h3><p>802.11中，MAC以及任何数据的传输都需要得到确认。这些数据包括普通的数据传输、RTS/CTS交换之前帧以及分片帧。<br><img src="%E6%8E%A7%E5%88%B6%E5%B8%A7CTS_ACK.png" alt=""></p>
+<h3 id="PS-POLL"><a href="#PS-POLL" class="headerlink" title="PS-POLL"></a>PS-POLL</h3><p>该控制帧被STA用于从AP中获取因省电模式而缓存的数据。当一部移动工作站从省电模式中苏醒，便会发送一个 PS-Poll 帧给基站，以取得任何暂存帧。其中AID的值是STA和AP关联时，由AP赋给该STA的。<br><img src="%E6%8E%A7%E5%88%B6%E5%B8%A7PS_POLL.png" alt=""></p>
+<h2 id="管理帧"><a href="#管理帧" class="headerlink" title="管理帧"></a>管理帧</h2><p>管理帧用于管理无线网络，如节点的加入和退出无线网络等。802.11规范里面共定义了15种管理帧，携带的信息很复杂，其中定长字段有42种，信息元素有120种。<br><img src="%E7%AE%A1%E7%90%86%E5%B8%A7%E6%A0%BC%E5%BC%8F.png" alt=""><br>管理帧包括MAC Header （6个字段），Frame Body和FCS，其中Frame Body携带具体的管理信息数据。<br>管理信息数据包括：</p>
+<ul>
+<li>定长字段（Fixed Field）</li>
+<li>信息元素（Information Element）<h3 id="定长字段"><a href="#定长字段" class="headerlink" title="定长字段"></a>定长字段</h3><ul>
+<li>Authentication Algorithm Number：2个byte，用于说明认证过程中所使用的认证类型</li>
+<li>0：代表开放系统身份认证（Open SystemAuthentication）。</li>
+<li>1：代表共享密钥身份认证（Shared KeyAuthentication）。</li>
+<li>2：代表快速BSS切换（Fast BSS Transition）。</li>
+<li>3：代表SAE（Simultaneous Authentication ofEquals）。用于两个STA互相认证的方法，常用于Mesh BSS网络。</li>
+<li>65535：代表厂商自定义算法。</li>
+<li>Beacon Interval field：该字段占2字节。每隔一段时间AP就会发出Beacon信号用来宣布无线网络的存在。该信号包含了BSS参数等重要信息。所以STA必须要监听Beacon信号。</li>
+<li>Beacon Interval field字段用来表示Beacon信号之间间隔的时间，其单位为Time Units（规范中缩写为TU。注意，一个TU为1024微秒。这里采用2作为基数进行计算）。一般该字段会设置为100个TU。</li>
+<li>Capability Information（性能信息）：该字段长2字节，一般通过Beacon帧、ProbeRequest和Response帧携带它。该字段用于宣告此网络具备何种功能。2字节中的每一位（共16位）都用来表示网络是否拥有某项功能</li>
+</ul>
+</li>
+</ul>
+<h3 id="常用管理帧——Beacon帧"><a href="#常用管理帧——Beacon帧" class="headerlink" title="常用管理帧——Beacon帧"></a>常用管理帧——Beacon帧</h3><p>AP通过定时发送Beacon帧来声明某个无线网络，STA通过接收到的Beacon帧来感知当前存在的无线网络。Beacon帧就是某个无线网络的心跳帧，主要携带如下信息：Timestamp、Beacon Interval、Capability、SSID</p>
+<h3 id="802-11常用管理帧：Probe-Request-Response帧"><a href="#802-11常用管理帧：Probe-Request-Response帧" class="headerlink" title="802.11常用管理帧：Probe Request/Response帧"></a>802.11常用管理帧：Probe Request/Response帧</h3><p>STA用Probe Request帧来搜索周围的无线网络，包括的信息： SSID 、 Supported Rates 、Extended Supported Rates。<br>AP收到Probe Request帧后，会以Probe Response 帧进行响应，该帧携带的信息和Beacon帧类似.</p>
+<h3 id="802-11常用管理帧：Association-Request帧"><a href="#802-11常用管理帧：Association-Request帧" class="headerlink" title="802.11常用管理帧：Association Request帧"></a>802.11常用管理帧：Association Request帧</h3><p>当STA要关联某个AP时，发送AssociationRequest帧。该帧携带的主要信息如下：</p>
+<ul>
+<li>Capability：AP将检查该字段判断STA是否满足要求</li>
+<li>Listen Interval：AP将根据该值分配PS时所需的缓冲区</li>
+<li>SSID：AP将检查SSID是否为自己所在网络</li>
+<li>Supported Rates: AP将检查该字段是否满足要求</li>
+</ul>
+<h3 id="802-11常用管理帧：Association-Response帧"><a href="#802-11常用管理帧：Association-Response帧" class="headerlink" title="802.11常用管理帧：Association Response帧"></a>802.11常用管理帧：Association Response帧</h3><p>针对Association Request帧，AP会回复一个Association Response帧来通知关联请求的处理结果，主要包括如下信息：</p>
+<ul>
+<li>Capability: AP设置的Capability</li>
+<li>Status Code: AP返回的关联请求处理结果</li>
+<li>AID：AP返回关联ID给STA</li>
+<li>Supported Rates: AP支持的传输速率</li>
+</ul>
+<h3 id="802-11常用管理帧：authentication帧"><a href="#802-11常用管理帧：authentication帧" class="headerlink" title="802.11常用管理帧：authentication帧"></a>802.11常用管理帧：authentication帧</h3><p>Authentication帧用于进行身份认证，主要包括如下信息：</p>
+<ul>
+<li>Authentication Algorithm Number: 认证算法类型</li>
+<li>Authentication Transaction Sequence Number: 认证过程可能需要好几次帧交换，所以每个帧都有自己的编号</li>
+<li>Status Code: 有些类型的认证会使用该值返回结果</li>
+<li>Challenge Text: 有些类型的认证会使用该字段</li>
+</ul>
+<h2 id="数据帧"><a href="#数据帧" class="headerlink" title="数据帧"></a>数据帧</h2><p>用来携带上层协议数据（如IP数据包），负责在工作站之间传输数据。格式即为基础的帧格式。</p>
+<h1 id="WLAN安全综述"><a href="#WLAN安全综述" class="headerlink" title="WLAN安全综述"></a>WLAN安全综述</h1><p>WLAN安全的发展经历了多个阶段。</p>
+<ul>
+<li>WEP（Wired Equivalent Privacy），即<strong>有线等效保密</strong>，目的是达到和有线网络相同的安全性。</li>
+<li>WPA（Wi-Fi Protected Access）,实现了802.11i草案的一个子集，只需要更新固件，不需要更新硬件即可实现</li>
+<li>WPA2（Wi-Fi Protected Access II）,实现了802.11i规范</li>
+<li>WPA3（Wi-Fi Protected Access III）,更强的安全算法，GCMP，ECDH，……</li>
+</ul>
+<h1 id="WEP（Wired-Equivalent-Privacy）"><a href="#WEP（Wired-Equivalent-Privacy）" class="headerlink" title="WEP（Wired Equivalent Privacy）"></a>WEP（Wired Equivalent Privacy）</h1><p>有线等效保密提供了<strong>身份认证</strong>、<strong>保密性</strong>、<strong>完整性</strong>三种安全服务。然而，在后面我们会分析出其保密性并不可靠。</p>
+<h2 id="身份认证"><a href="#身份认证" class="headerlink" title="身份认证"></a>身份认证</h2><h3 id="开放系统认证"><a href="#开放系统认证" class="headerlink" title="开放系统认证"></a>开放系统认证</h3><p>流程非常简单，一个认证请求之后就是连接请求。<br><img src="%E5%BC%80%E6%94%BE%E7%B3%BB%E7%BB%9F%E8%AE%A4%E8%AF%81.png" alt=""></p>
+<h3 id="基于PSK的身份认证"><a href="#基于PSK的身份认证" class="headerlink" title="基于PSK的身份认证"></a>基于PSK的身份认证</h3><p>STA发起认证请求后，AP返回一个明文challenge（在AH字段中），STA加密后返回密文让AP去验证，让我感到神奇的事……这个认证不是STA发起的吗？功能上怎么像是AP在认证STA是否真实？？<br><img src="PSK%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81.png" alt=""></p>
+<h2 id="WEP加密"><a href="#WEP加密" class="headerlink" title="WEP加密"></a>WEP加密</h2><p>协议仅对数据帧内的Framebody进行加密，其中加密前的明文被称为MSDU，加密后则称为MPDU。加密的格式和流程可以用下图很好的展示出来。<br><img src="WEP%E5%8A%A0%E5%AF%86%E6%A0%BC%E5%BC%8F.png" alt=""><br><img src="WEP%E5%8A%A0%E5%AF%86%E6%B5%81%E7%A8%8B.png" alt=""><br>解密流程只需要逆着来一遍就好了，重点来了，这个WEP的加密，非常，非常，<strong>不安全</strong>：<br>一种攻击是针对RC4的FMS攻击，这个似乎比较高大上，直接去查论文好了。<code>Attackers can recover the RC4 key after eavesdropping on the network.</code><br>另一种攻击就比较直接了，因为IV是明文传输的，WEP key（WiFi密码）又是一样的，直接导致密钥流对于同一wifi下的其他STA是透明的，明文也就直接被破解了……</p>
+<h1 id="WPA-Wireless-Protected-Access"><a href="#WPA-Wireless-Protected-Access" class="headerlink" title="WPA(Wireless Protected Access)"></a>WPA(Wireless Protected Access)</h1><p>WEP的不安全催生了WPA，但是WPA也只是802.11i草稿中初步的实现。其使用的加密手段称为TKIP。TKIP的总流程如下所示（这张图看不清楚，后面细分为三部分的图就清楚了。<br><img src="TKIP%E6%80%BB%E6%B5%81%E7%A8%8B.png" alt=""></p>
+<h2 id="TKIP加密过程"><a href="#TKIP加密过程" class="headerlink" title="TKIP加密过程"></a>TKIP加密过程</h2><p><img src="TKIP%E5%8A%A0%E5%AF%86%E6%B5%81%E7%A8%8B.png" alt=""><br>对照WEP，改变的地方包括：<br>1、WEP Seed的生成从简单的生成变成了我们之后要单独说的样子<br>2、Plaintext MPDU的生成从简单的生成变成了我们之后要单独说的样子<br>3、帧封装。WEP在MAC Header后面紧随4-octet的IV字段，然后是加密的MSDU||ICV；TKIP的MAC Header后面紧随8个octet的(IV||Extended IV)，然后是加密的MSDU||MIC||ICV。</p>
+<h2 id="Plaintext-MPDU生成"><a href="#Plaintext-MPDU生成" class="headerlink" title="Plaintext MPDU生成"></a>Plaintext MPDU生成</h2><p><img src="TKIP_MPDU%E7%94%9F%E6%88%90.png" alt=""><br>内容也较为好懂，重点就在于MIC key，它是从TK中取出来的指定64位。然后是MIC算法。</p>
+<h3 id="MIC计算"><a href="#MIC计算" class="headerlink" title="MIC计算"></a>MIC计算</h3><p>TKIP 使用称为 Michael 算法的 Keyed Hash function来生成MIC。Michael的输入为64比特key和任意长度的消息，输出为64比特的Michael值。<br><strong>MIC Key：</strong><br>如果是AP发送给STA，则为TK的128 - 191比特<br>如果是STA发送给AP，则为TK的192 - 255比特</p>
+<h2 id="WEP-Seed生成"><a href="#WEP-Seed生成" class="headerlink" title="WEP Seed生成"></a>WEP Seed生成</h2><p><img src="WEP_Seed%E7%94%9F%E6%88%90.png" alt=""><br><strong>TSC0-TSC5</strong>: TSC0-TSC5 分 别 代 表 TSC （ TKIP SequenceCounter）的每个字节。TSC是TKIP中的一个计数生成器，它会为每一个MPDU递增的生成一个6字节的TSC序列号，用于抗重放攻击。<br><strong>TK（Temporal Key）</strong>：临时密钥，它是从PTK或者GTK派生而来的<br><strong>TA(Transmitter Address)</strong>:一般是指AP的MAC地址</p>
+<h1 id="WPA2"><a href="#WPA2" class="headerlink" title="WPA2"></a>WPA2</h1><p>仔细想一想，WPA就像是在WEP上面套了一层壳（更新生成seed方法，更新生成MPDU方法），有没有面目全非一点的加密方法呢？答案是有的，WPA2使用了CCMP作为新的加密方法，首先介绍CCM（Counter with CBC-MAC）</p>
+<h2 id="CCM"><a href="#CCM" class="headerlink" title="CCM"></a>CCM</h2><p>CCM是一种通用的认证加密分组密码模式，仅定义为使用128比特的分组长度，比如采用AES。但是，根据CCM的设计原理，CCM也可以用于其他分组长度。<br>对于通用的CCM模式来说，需要两个参数选择。第一个选择是<strong>M</strong>，指认证字段的长度，有效值包括4、6、8、10、12、14和16个octets。CCMP选择M为8。第二个选择是<strong>L</strong>，指length字段的长度，L的有效值介于2到8个octets（L=1保留用）。CCMP选择L为2。</p>
+<h3 id="CCM输入"><a href="#CCM输入" class="headerlink" title="CCM输入"></a>CCM输入</h3><ol>
+<li>适合分组密码的加密密钥<strong>K</strong></li>
+<li>长度为15-L的Nonce <strong>N</strong>。在任何加密密钥K的使用期限内，Nonce不能重复使用。</li>
+<li>消息<strong>m</strong>，包含l(m)个octets，0 &lt;= l(m) &lt; 2^(8L)。长度限制确保了l(m)能被编码到L个octets的字段中。</li>
+<li>附加认证数据<strong>a</strong>，由l(a)个octets组成，0 &lt;= l(a)&lt; 2^64。附加认证数据会被认证但是不加密，附加数据也不包括在这种模式的输出。可以用于认证包头的明文字段，对理解消息有影响的上下文信息。</li>
+</ol>
+<h3 id="CCM认证"><a href="#CCM认证" class="headerlink" title="CCM认证"></a>CCM认证</h3><p><img src="CCM%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B.png" alt=""><br>K就是前述的密钥了，B_0~B_n则是如下生成的，最终MAC值<strong>T</strong>取<strong>X_n+1</strong>中前M字节。<br><strong>B_0</strong>：<br><img src="CCM%E8%AE%A4%E8%AF%81B_0.png" alt=""></p>
+<ul>
+<li>Flags<br>第7比特保留为将来扩展用，设置为0。<br>第6比特为Adata比特，如果l(a) = 0，则Adata为0，表示没有附加认证数据；反之，如果l(a)&gt; 0，则Adata为1，表示有附加认证数据。<br>第5到3比特为M’，设置为(M-2)/2。<br>第2到0比特为L’，设置为L-1。L和M要是记不得是啥了，可以看看CCM的参数。</li>
+<li><em>B_1~B_n*</em><br>如果Adata为1，则表示有附加认证数据，其构成为：l(a)||a，也就是l(a)与a的拼接，然后对拼接的结果按一个分组16字节进行分割，必要时需对最后一个分组添加0x00以补齐16字节。这些分组分别为B_1，B_2，……，也就是B_0后面的分组。注意，这里的l(a)部分是对l(a)（也就是a的长度）本身的编码。</li>
+</ul>
+<h3 id="CCM加密"><a href="#CCM加密" class="headerlink" title="CCM加密"></a>CCM加密</h3><p><strong>密钥流生成</strong><br>加密过程是采用CTR模式，首先定义密钥流分组为：<br>S_i ：= E(K,A_i)，其中E为加密算法，i为0，1，2，……<br><img src="CCM%E5%AF%86%E9%92%A5%E6%B5%81%E7%94%9F%E6%88%90.png" alt=""><br><strong>加密</strong><br><img src="CCM%E5%8A%A0%E5%AF%86%E6%B5%81%E7%A8%8B.png" alt=""><br>加密过程即为简单的明文分组异或密钥流分组。但是注意，<strong>S_0不参与加密明文</strong><br>S_0用于计算认证值：<code>U := T XOR first-M-bytes( S_0)</code>，U为认证值而T为MAC值</p>
+<p>最终输出为加密消息和U</p>
+<h2 id="CCMP"><a href="#CCMP" class="headerlink" title="CCMP"></a>CCMP</h2><p>CCM没读懂的话可以多读几遍，我们可以发现CCM并没有管你用什么加密方式E，他只是给出了一种加密方式的运用，即，如何用固定的加密长度拓展为对任意长度明文的加密。在CCMP中，这种加密方式被具化为AES，128bit。<br>CCMP针对MPDU进行安全处理，对MSDU提供<strong>保密性</strong>，同时对MSDU和MAC Header的部分字段做<strong>完整性保护</strong>。<br><img src="CCMP.png" alt=""></p>
+<h3 id="CCMP输入"><a href="#CCMP输入" class="headerlink" title="CCMP输入"></a>CCMP输入</h3><p>MAC header：802.11 MAC 头部<br>plaintext Data(MSDU): 需要发送的playload<br>PN(packet number): 长度48bit，与TKIP中的TSC（TKIP Sequence Counter ）相似，是每个帧的标识，它会随着帧的发送过程不断递增，用于抗重放攻击。<br>TK(Temporal Key)：和TKIP加密一样，CCMP也有一个128bit的TK。（在后面密钥管理部分详述）<br>Key ID: 和TKIP中的一样，用于指定加密用的key，这个ID是index的缩写。<br>Nonce：是一个随机数，长104bit，是由PN (packet number ， 48bit), Qos 中的优先级字段（8bit）和TA(Transmitter Address , 48bit)这三个字段组合来。<br>AAD （Additional Authentication Data ）：由MPUD的头部构建而来，用于确保MAC头部的数据完整性，接收端会使用这个字段来校验MAC头部。</p>
+<p><strong>Create Packet Number</strong>：需要发送一个新的MPDU时，会重新创建一个48bit的PN；如果是重传的MPDU，则使用原来发送MPDU的PN。</p>
+<p><strong>Create Additional Authentication Data</strong><br><img src="CCMP_AAD.png" alt=""><br>使 用 MPDU 的 头 部 构 建 AAD (AdditionalAuthentication Data)<br>AAD由MAC Header的上述字段构成，其中部分字段的部分比特可能设置为0。根据帧的类型不同，A4和QC字段可能没有，比如管理帧是没有QC字段的。<br>因为AAD作为计算MIC值的输入，因此确保了MAC Header部分字段的完整性。</p>
+<p><strong>Create Nonce</strong><br>由PN(packet number，48bit), Qos中的优先级字段（8bit）和TA(transmitter address , 48bit，Address 2)这三个字段组合生成一个Nonce。</p>
+<p><strong>Create CCMP Header</strong><br>构建8-octet CCMP 头部，这个头部由Key ID和PN构成，PN又被分成6个字段。</p>
+<p><strong>CCM处理</strong><br>使用Temporal Key, AAD, Nonce, 和MPDU data 作为CCM算法输入，生成8个字节的MIC和加密的MSDU。</p>
+<h1 id="RSNA密钥管理"><a href="#RSNA密钥管理" class="headerlink" title="RSNA密钥管理"></a>RSNA密钥管理</h1><p>强健安全网络关联（Robust Security Network Association）用于管理不同STA与AP间的密钥</p>
+<ul>
+<li>PTK（Pairwise transient keys）<br>用于加密不公开的密钥对（1对1）</li>
+<li>GTK（Group temporal key）<br>公开的AP与STA间密钥（多对1）</li>
+</ul>
+<p><img src="RSNA%E5%AF%86%E9%92%A5%E5%B1%82%E6%AC%A1.png" alt=""><br>我们重点考察PTK的内容，也就是PMK如何经过四次握手变为PTK，而一个PTK可以拆分为一套具体使用的密钥，如下图所示。<br><img src="RSNA%E5%AF%86%E9%92%A5%E5%AF%BC%E5%87%BA.png" alt=""></p>
+<h2 id="4-way-handshake"><a href="#4-way-handshake" class="headerlink" title="4-way handshake"></a>4-way handshake</h2><p>为了保证 PTK 安全性，PTK 通过申请者与认证者传输的参数在本地计算产生，而不是直接传输。参数包括双方随机数、MAC 地址、协商密钥套件和 PMK 等，保证了密钥的实时性和双方共有性。<br>四次握手协议假定两个前提条件必然成立：（1）AS 与 STA 已实现双向认证，同时 AP 合法性已认证，认证成功后 EAP-Success 消息成功触发四次握手过程；（2）AS 已通过安全通道将 PMK 传递给 AP。<br><img src="RSNA4-wayhandshake.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8D%8F%E8%AE%AE/" rel="tag"># 协议</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/21/TLS%E5%8D%8F%E8%AE%AE/" rel="next" title="TLS协议">
+                <i class="fa fa-chevron-left"></i> TLS协议
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/14/CSIT%E5%88%9D%E6%8E%A2/" rel="prev" title="CSIT初探">
+                CSIT初探 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="陈潇" />
+            
+              <p class="site-author-name" itemprop="name">陈潇</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/iwannatobehappy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://845895322@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#无线网络术语简介"><span class="nav-number">1.</span> <span class="nav-text">无线网络术语简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WLAN工作原理"><span class="nav-number">2.</span> <span class="nav-text">WLAN工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础数据帧格式"><span class="nav-number">2.2.</span> <span class="nav-text">基础数据帧格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制帧"><span class="nav-number">2.3.</span> <span class="nav-text">控制帧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RTS（Request-To-Send）"><span class="nav-number">2.3.1.</span> <span class="nav-text">RTS（Request To Send）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTS（Clear-To-Send）"><span class="nav-number">2.3.2.</span> <span class="nav-text">CTS（Clear To Send）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACK"><span class="nav-number">2.3.3.</span> <span class="nav-text">ACK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-POLL"><span class="nav-number">2.3.4.</span> <span class="nav-text">PS-POLL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理帧"><span class="nav-number">2.4.</span> <span class="nav-text">管理帧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定长字段"><span class="nav-number">2.4.1.</span> <span class="nav-text">定长字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用管理帧——Beacon帧"><span class="nav-number">2.4.2.</span> <span class="nav-text">常用管理帧——Beacon帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#802-11常用管理帧：Probe-Request-Response帧"><span class="nav-number">2.4.3.</span> <span class="nav-text">802.11常用管理帧：Probe Request&#x2F;Response帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#802-11常用管理帧：Association-Request帧"><span class="nav-number">2.4.4.</span> <span class="nav-text">802.11常用管理帧：Association Request帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#802-11常用管理帧：Association-Response帧"><span class="nav-number">2.4.5.</span> <span class="nav-text">802.11常用管理帧：Association Response帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#802-11常用管理帧：authentication帧"><span class="nav-number">2.4.6.</span> <span class="nav-text">802.11常用管理帧：authentication帧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据帧"><span class="nav-number">2.5.</span> <span class="nav-text">数据帧</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WLAN安全综述"><span class="nav-number">3.</span> <span class="nav-text">WLAN安全综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WEP（Wired-Equivalent-Privacy）"><span class="nav-number">4.</span> <span class="nav-text">WEP（Wired Equivalent Privacy）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#身份认证"><span class="nav-number">4.1.</span> <span class="nav-text">身份认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开放系统认证"><span class="nav-number">4.1.1.</span> <span class="nav-text">开放系统认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于PSK的身份认证"><span class="nav-number">4.1.2.</span> <span class="nav-text">基于PSK的身份认证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WEP加密"><span class="nav-number">4.2.</span> <span class="nav-text">WEP加密</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WPA-Wireless-Protected-Access"><span class="nav-number">5.</span> <span class="nav-text">WPA(Wireless Protected Access)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TKIP加密过程"><span class="nav-number">5.1.</span> <span class="nav-text">TKIP加密过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Plaintext-MPDU生成"><span class="nav-number">5.2.</span> <span class="nav-text">Plaintext MPDU生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MIC计算"><span class="nav-number">5.2.1.</span> <span class="nav-text">MIC计算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WEP-Seed生成"><span class="nav-number">5.3.</span> <span class="nav-text">WEP Seed生成</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WPA2"><span class="nav-number">6.</span> <span class="nav-text">WPA2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CCM"><span class="nav-number">6.1.</span> <span class="nav-text">CCM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CCM输入"><span class="nav-number">6.1.1.</span> <span class="nav-text">CCM输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CCM认证"><span class="nav-number">6.1.2.</span> <span class="nav-text">CCM认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CCM加密"><span class="nav-number">6.1.3.</span> <span class="nav-text">CCM加密</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CCMP"><span class="nav-number">6.2.</span> <span class="nav-text">CCMP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CCMP输入"><span class="nav-number">6.2.1.</span> <span class="nav-text">CCMP输入</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RSNA密钥管理"><span class="nav-number">7.</span> <span class="nav-text">RSNA密钥管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-way-handshake"><span class="nav-number">7.1.</span> <span class="nav-text">4-way handshake</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈潇</span>
+
+  
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'oXGA1XzMIhhs9x4yNbf1DOge-gzGzoHsz',
+        appKey: 'JYRNnDQ1kh2RA7V2MYsSnRVR',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
