@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="安全," />
 
 
 
@@ -88,16 +88,19 @@
 
 
 
-<meta name="description" content="引子 蔓灵花APT攻击活动报告 2016年蔓灵花APT攻击报告分析 PE文件简介https:&#x2F;&#x2F;www.freebuf.com&#x2F;articles&#x2F;system&#x2F;86596.html  DOS头    从0000 0000到0000 003F      成员结构USHORT e_magic; &#x2F;&#x2F; 固定值，DOS签名“MZ--&gt;Mark Zbikowski（设计了DOS的工程师）”   USHORT">
+<meta name="description" content="计算机的文件结构PE文件结构  PE文件是portable File Format（可移植文件）的简写，也就是Windows上以EXE、DLL、OCX、SYS、COM为后缀的可执行文件。了解PE文件的结构，是给Windows文件上病毒的第一步。如果是第一次学习Pe文件结构，最好先有如下的概念：一个可执行文件，核心必然是数据区和代码区，同时，为了方便计算机将文件从硬盘读入到内存并执行，需要有标志数据">
 <meta property="og:type" content="article">
 <meta property="og:title" content="木马逆向分析入门">
 <meta property="og:url" content="https://iwannatobehappy.github.io/2019/07/09/%E6%9C%A8%E9%A9%AC%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="种菜园">
-<meta property="og:description" content="引子 蔓灵花APT攻击活动报告 2016年蔓灵花APT攻击报告分析 PE文件简介https:&#x2F;&#x2F;www.freebuf.com&#x2F;articles&#x2F;system&#x2F;86596.html  DOS头    从0000 0000到0000 003F      成员结构USHORT e_magic; &#x2F;&#x2F; 固定值，DOS签名“MZ--&gt;Mark Zbikowski（设计了DOS的工程师）”   USHORT">
+<meta property="og:description" content="计算机的文件结构PE文件结构  PE文件是portable File Format（可移植文件）的简写，也就是Windows上以EXE、DLL、OCX、SYS、COM为后缀的可执行文件。了解PE文件的结构，是给Windows文件上病毒的第一步。如果是第一次学习Pe文件结构，最好先有如下的概念：一个可执行文件，核心必然是数据区和代码区，同时，为了方便计算机将文件从硬盘读入到内存并执行，需要有标志数据">
+<meta property="og:image" content="https://iwannatobehappy.github.io/2019/07/09/%E6%9C%A8%E9%A9%AC%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8/PE%E6%80%BB%E7%BB%93%E6%9E%84.jpg">
 <meta property="article:published_time" content="2019-07-09T08:40:43.000Z">
-<meta property="article:modified_time" content="2019-11-17T11:13:42.662Z">
+<meta property="article:modified_time" content="2020-04-05T08:27:02.500Z">
 <meta property="article:author" content="陈潇">
+<meta property="article:tag" content="安全">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://iwannatobehappy.github.io/2019/07/09/%E6%9C%A8%E9%A9%AC%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8/PE%E6%80%BB%E7%BB%93%E6%9E%84.jpg">
 
 
 
@@ -349,7 +352,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.6k
+                  2.5k
                 </span>
               
 
@@ -374,171 +377,55 @@
       
 
       
-        <p>引子</p>
-<p><a href="https://www.freebuf.com/articles/database/192726.html" target="_blank" rel="noopener">蔓灵花APT攻击活动报告</a></p>
-<p><a href="https://www.freebuf.com/articles/paper/120002.html" target="_blank" rel="noopener">2016年蔓灵花APT攻击报告分析</a></p>
-<h1 id="PE文件简介"><a href="#PE文件简介" class="headerlink" title="PE文件简介"></a>PE文件简介</h1><p><a href="https://www.freebuf.com/articles/system/86596.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/86596.html</a></p>
+        <h1 id="计算机的文件结构"><a href="#计算机的文件结构" class="headerlink" title="计算机的文件结构"></a>计算机的文件结构</h1><h2 id="PE文件结构"><a href="#PE文件结构" class="headerlink" title="PE文件结构"></a>PE文件结构</h2><p>  PE文件是portable File Format（可移植文件）的简写，也就是Windows上以EXE、DLL、OCX、SYS、COM为后缀的可执行文件。了解PE文件的结构，是给Windows文件上病毒的第一步。如果是第一次学习Pe文件结构，最好先有如下的概念：一个可执行文件，核心必然是数据区和代码区，同时，为了方便计算机将文件从硬盘读入到内存并执行，需要有标志数据区、代码区位置等信息的辅助数据，这些辅助数据被整合在文件的头部以及各区域的头部信息中。当然这些头部信息并不都是我们需要关注的，我会强调PE文件病毒所关注的信息。<br>  <strong>虚拟地址</strong><br>  介绍结构前，必须先介绍虚拟地址这一重要的辅助数据。（相对地址与绝对地址相信不用介绍）<br>  PE文件被加载到内存中后，被称为映像（image），在硬盘中，文件内容是连续安放的，但是在内存中，文件各区段会因为内存分页而产生对齐，节与节之间存在额外的空白段。因此记录区段位置需要两种数据：在硬盘中相对文件头的偏移（物理地址）以及在内存中相对映像头的偏移（相对虚拟地址RVA）。<br>  <code>RVA+ImageBase=VA</code>：相对虚拟地址+映像基址=虚拟地址</p>
+<p><img src="PE%E6%80%BB%E7%BB%93%E6%9E%84.jpg" alt=""></p>
 <ul>
-<li><p><strong>DOS头</strong>    从0000 0000到0000 003F</p>
-  <details>
-  <summary>成员结构</summary>USHORT e_magic; // 固定值，DOS签名“MZ-->Mark Zbikowski（设计了DOS的工程师）”
-  USHORT e_cblp; // 文件最后页的字节数
-  USHORT e_cp; // 文件页数
-  USHORT e_crlc; // 重定义元素个数
-  USHORT e_cparhdr; // 头部尺寸，以段落为单位
-  USHORT e_minalloc; // 所需的最小附加段
-  USHORT e_maxalloc; // 所需的最大附加段
-  USHORT e_ss; // 初始的SS值（相对偏移量）
-  USHORT e_sp; // 初始的SP值
-  USHORT e_csum; // 校验和
-  USHORT e_ip; // 初始的IP值
-  USHORT e_cs; // 初始的CS值（相对偏移量）
-  USHORT e_lfarlc; // 重分配表文件地址
-  USHORT e_ovno; // 覆盖号
-  USHORT e_res[4]; // 保留字
-  USHORT e_oemid; // OEM标识符（相对e_oeminfo）
-  USHORT e_oeminfo; // OEM信息
-  USHORT e_res2[10]; // 保留字
-  LONG e_lfanew; // 指示NT头的偏移（根据不同文件拥有可变值）
-  </details>
+<li><p><strong>DOS头</strong>    40h<br>DOS头用于兼容MS-DOS操作系统（没人用了），主要作用在于标志文件类型和NT头位置。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">USHORT e_magic;    <span class="comment">// 固定值，DOS签名“MZ--&gt;Mark Zbikowski（设计了DOS的工程师）”</span></span><br><span class="line">USHORT e_cblp;     <span class="comment">// 文件最后页的字节数</span></span><br><span class="line">USHORT e_cp;       <span class="comment">// 文件页数</span></span><br><span class="line">USHORT e_crlc;     <span class="comment">// 重定义元素个数</span></span><br><span class="line">USHORT e_cparhdr;  <span class="comment">// 头部尺寸，以段落为单位</span></span><br><span class="line">USHORT e_minalloc; <span class="comment">// 所需的最小附加段</span></span><br><span class="line">USHORT e_maxalloc; <span class="comment">// 所需的最大附加段</span></span><br><span class="line">USHORT e_ss;       <span class="comment">// 初始的SS值（相对偏移量）</span></span><br><span class="line">USHORT e_sp;       <span class="comment">// 初始的SP值</span></span><br><span class="line">USHORT e_csum;     <span class="comment">// 校验和</span></span><br><span class="line">USHORT e_ip;       <span class="comment">// 初始的IP值</span></span><br><span class="line">USHORT e_cs;       <span class="comment">// 初始的CS值（相对偏移量）</span></span><br><span class="line">USHORT e_lfarlc;   <span class="comment">// 重分配表文件地址</span></span><br><span class="line">USHORT e_ovno;     <span class="comment">// 覆盖号</span></span><br><span class="line">USHORT e_res[<span class="number">4</span>];   <span class="comment">// 保留字</span></span><br><span class="line">USHORT e_oemid;    <span class="comment">// OEM标识符（相对e_oeminfo）</span></span><br><span class="line">USHORT e_oeminfo;  <span class="comment">// OEM信息</span></span><br><span class="line">USHORT e_res2[<span class="number">10</span>]; <span class="comment">// 保留字</span></span><br><span class="line">LONG e_lfanew;     <span class="comment">// 指示NT头的偏移（根据不同文件拥有可变值）</span></span><br></pre></td></tr></table></figure>
+<p>关注点在于e_magic和e_lfanew，前者用于标明DOS文件类型，后者用于指定NT头相对映像起始地址的偏移。</p>
 </li>
-<li><p><strong>DOS存根</strong> 从 0000 0040到0000 00BF</p>
-<p>没有存根，文件也能正常执行</p>
+<li><p><strong>DOS存根</strong></p>
+<p>一段大空白，没有存根文件也能正常执行，（刚好可以用来放些病毒感染标志之类的）</p>
 </li>
-<li><p><strong>NT头</strong> 从0000 00C0到0000 01BF</p>
+<li><p><strong>NT头</strong><br>NT头里有点套娃定义，注意不要被绕晕，最基本的就是以下定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DWORD Signature;  </span><br><span class="line">IMAGE_FILE_HEADER FileHeader;  </span><br><span class="line">IMAGE_OPTIONAL_HEADER32 OptionalHeader;</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p><strong>PE签名</strong>（固定值）</p>
-<p>类似于DOS头中的e_magic，其高16位是0，低16是0x4550，用字符表示是&#039;PE‘（00004550）。</p>
-</li>
-<li><p><strong>PE文件头</strong></p>
+<li>Signature类似于DOS头中的e_magic，其高16位是0，低16是0x4550，用字符表示正好是’PE’。</li>
+<li>PE文件头（FileHeader）是一个被套娃的结构体，定义如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WORD    Machine; 					<span class="comment">//CPU唯一标志码</span></span><br><span class="line">WORD    NumberOfSections; 		<span class="comment">//节表的项数</span></span><br><span class="line">DWORD   TimeDateStamp; 			<span class="comment">//PE文件创建的时间</span></span><br><span class="line">DWORD   PointerToSymbolTable;     <span class="comment">//COFF文件符号表在文件中的偏移</span></span><br><span class="line">DWORD   NumberOfSymbols; 			<span class="comment">//符号表的数量</span></span><br><span class="line">WORD    SizeOfOptionalHeader; 	<span class="comment">//指出IMAGE_OPTIONAL_HEADER32结构体的长度</span></span><br><span class="line">WORD    Characteristics; 			<span class="comment">//用于标识文件的属性，文件是否是可运行的状态，是否为DLL文件等信息。</span></span><br></pre></td></tr></table></figure>
 <details>
-<summary>成员结构</summary>WORD    Machine;                             //CPU唯一标志码
-WORD    NumberOfSections;         //节表的项数
-DWORD   TimeDateStamp;             //PE文件创建的时间
-DWORD   PointerToSymbolTable; //COFF文件符号表在文件中的偏移
-DWORD   NumberOfSymbols;         //符号表的数量
-WORD    SizeOfOptionalHeader;     //指出IMAGE_OPTIONAL_HEADER32结构体的长度
-WORD    Characteristics;                 //用于标识文件的属性，文件是否是可运行的状态，是否为DLL文件等信息。
-</details>
-
-
-</li>
+<summary>FileHeader拓展</summary>
+以下为Machine的值对应的具体CPU型号（爱看不看系列）
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#define IMAGE_FILE_MACHINE_UNKNOWN           0  </span><br><span class="line">#define IMAGE_FILE_MACHINE_I386              0x014c  &#x2F;&#x2F; Intel 386.  </span><br><span class="line">#define IMAGE_FILE_MACHINE_R3000             0x0162  &#x2F;&#x2F; MIPS little-endian, 0x160 big-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_R4000             0x0166  &#x2F;&#x2F; MIPS little-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_R10000            0x0168  &#x2F;&#x2F; MIPS little-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_WCEMIPSV2         0x0169  &#x2F;&#x2F; MIPS little-endian WCE v2  </span><br><span class="line">#define IMAGE_FILE_MACHINE_ALPHA             0x0184  &#x2F;&#x2F; Alpha_AXP  </span><br><span class="line">#define IMAGE_FILE_MACHINE_SH3               0x01a2  &#x2F;&#x2F; SH3 little-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_SH3DSP            0x01a3  </span><br><span class="line">#define IMAGE_FILE_MACHINE_SH3E              0x01a4  &#x2F;&#x2F; SH3E little-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_SH4               0x01a6  &#x2F;&#x2F; SH4 little-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_SH5               0x01a8  &#x2F;&#x2F; SH5  </span><br><span class="line">#define IMAGE_FILE_MACHINE_ARM               0x01c0  &#x2F;&#x2F; ARM Little-Endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_THUMB             0x01c2  </span><br><span class="line">#define IMAGE_FILE_MACHINE_AM33              0x01d3  </span><br><span class="line">#define IMAGE_FILE_MACHINE_POWERPC           0x01F0  &#x2F;&#x2F; IBM PowerPC Little-Endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_POWERPCFP         0x01f1  </span><br><span class="line">#define IMAGE_FILE_MACHINE_IA64              0x0200  &#x2F;&#x2F; Intel 64  </span><br><span class="line">#define IMAGE_FILE_MACHINE_MIPS16            0x0266  &#x2F;&#x2F; MIPS  </span><br><span class="line">#define IMAGE_FILE_MACHINE_ALPHA64           0x0284  &#x2F;&#x2F; ALPHA64  </span><br><span class="line">#define IMAGE_FILE_MACHINE_MIPSFPU           0x0366  &#x2F;&#x2F; MIPS  </span><br><span class="line">#define IMAGE_FILE_MACHINE_MIPSFPU16         0x0466  &#x2F;&#x2F; MIPS  </span><br><span class="line">#define IMAGE_FILE_MACHINE_AXP64             IMAGE_FILE_MACHINE_ALPHA64  </span><br><span class="line">#define IMAGE_FILE_MACHINE_TRICORE           0x0520  &#x2F;&#x2F; Infineon  </span><br><span class="line">#define IMAGE_FILE_MACHINE_CEF               0x0CEF  </span><br><span class="line">#define IMAGE_FILE_MACHINE_EBC               0x0EBC  &#x2F;&#x2F; EFI Byte Code  </span><br><span class="line">#define IMAGE_FILE_MACHINE_AMD64             0x8664  &#x2F;&#x2F; AMD64 (K8)  </span><br><span class="line">#define IMAGE_FILE_MACHINE_M32R              0x9041  &#x2F;&#x2F; M32R little-endian  </span><br><span class="line">#define IMAGE_FILE_MACHINE_CEE               0xC0EE</span><br></pre></td></tr></table></figure>
+</details></li>
+<li>PE可选头（<strong>OptionalHeader</strong>）同样是个套娃结构体，其类型IMAGE_OPTIONAL_HEADER32定义如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">WORD    Magic; <span class="comment">//为IMAGE_OPTIONAL_HEADER32时，magic码为10B，64时，为20B</span></span><br><span class="line">BYTE    MajorLinkerVersion;          <span class="comment">//链接器的版本号</span></span><br><span class="line">BYTE    MinorLinkerVersion;          <span class="comment">//链接器的版本号</span></span><br><span class="line">DWORD   SizeOfCode;                  <span class="comment">//代码段的长度，如果有多个代码段，则是代码段长度的总和</span></span><br><span class="line">DWORD   SizeOfInitializedData;       <span class="comment">//初始化的数据长度</span></span><br><span class="line">DWORD   SizeOfUninitializedData;     <span class="comment">//未初始化的数据长度</span></span><br><span class="line">DWORD   AddressOfEntryPoint;         <span class="comment">//程序入口的RVA</span></span><br><span class="line">DWORD   BaseOfCode;                  <span class="comment">//代码段起始地址的RVA</span></span><br><span class="line">DWORD   BaseOfData;                  <span class="comment">//数据段起始地址的RVA</span></span><br><span class="line">DWORD   ImageBase;                   <span class="comment">//映象基地址,这个基地址是建议，对于DLL来说，如果无法加载到这个地址，系统会自动为其选择地址</span></span><br><span class="line">DWORD   SectionAlignment;            <span class="comment">//映象节对齐</span></span><br><span class="line">DWORD   FileAlignment;               <span class="comment">//硬盘节对齐</span></span><br><span class="line">WORD    MajorOperatingSystemVersion; <span class="comment">//操作系统版本号</span></span><br><span class="line">WORD    MinorOperatingSystemVersion; <span class="comment">//操作系统版本号</span></span><br><span class="line">WORD    MajorImageVersion;           <span class="comment">//映象版本号</span></span><br><span class="line">WORD    MinorImageVersion;           <span class="comment">//映象版本号</span></span><br><span class="line">WORD    MajorSubsystemVersion;       <span class="comment">//子系统版本号</span></span><br><span class="line">WORD    MinorSubsystemVersion;       <span class="comment">//子系统版本号</span></span><br><span class="line">DWORD   Win32VersionValue;           <span class="comment">//保留，必须为0</span></span><br><span class="line">DWORD   SizeOfImage;                 <span class="comment">//映象大小</span></span><br><span class="line">DWORD   SizeOfHeaders;               <span class="comment">//所有文件头（包括节表）的大小，这个值是以FileAlignment对齐的</span></span><br><span class="line">DWORD   CheckSum;                    <span class="comment">//映象文件校验和</span></span><br><span class="line">WORD    Subsystem;                   <span class="comment">//运行该PE文件所需的子系统</span></span><br><span class="line">WORD    DllCharacteristics;          <span class="comment">//DLL的文件属性，只对DLL文件有效</span></span><br><span class="line">DWORD   SizeOfStackReserve;          <span class="comment">//运行时每个线程栈保留内存的大小</span></span><br><span class="line">DWORD   SizeOfStackCommit;           <span class="comment">//运行时每个线程栈初始占用内存大小</span></span><br><span class="line">DWORD   SizeOfHeapReserve;           <span class="comment">//运行时进程堆保留内存大小</span></span><br><span class="line">DWORD   SizeOfHeapCommit;            <span class="comment">//运行时进程堆初始占用内存大小</span></span><br><span class="line">DWORD   LoaderFlags;                 <span class="comment">//保留，必须为0</span></span><br><span class="line">DWORD   NumberOfRvaAndSizes;         <span class="comment">//数据目录的项数，即下面这个数组的项数</span></span><br><span class="line">IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];</span><br></pre></td></tr></table></figure>
+重点说说下面几个成员：<ol>
+<li>AddressOfEntryPoint<br>最开始的病毒喜欢修改这个值到病毒代码段，这样文件就会直接运行到病毒。</li>
+<li>ImageBase<br>一般来说，使用开发工具（VB/VC++/Delphi）创建好EXE文件后，其ImageBase值为00400000，DLL文件的ImageBase值为10000000（当然也可以指定其他值）。<br>执行PE文件时，PE装载器先创建进程，再将文件载入内存，然后把EIP寄存器的值设置为ImageBase+AddressOfEntryPoint</li>
+<li>SectionAlignment，FileAlignment<br>PE文件的Body部分被划分成若干节段，这些节段储存着不同类别的数据。FileAlignment指定了节段在磁盘文件中的最小单位，而SectionAlignment则指定了节区在内存中的最小单位（SectionAlignment必须大于或者等于FileAlignment）</li>
+<li>SizeOfImage<br>当PE文件加载到内存时，SizeOfImage指定了PE Image在虚拟内存中所占用的空间大小，一般文件大小与加载到内存中的大小是不同的（节段头中定义了各节装载的位置与占有内存的大小）</li>
+<li>SizeOfHeader<br>SizeOfHeader用来指出整个PE头大小。该值必须是FileAlignment的整数倍。第一节段所在位置与SizeOfHeader距文件开始偏移的量相同。</li>
+<li>NumberOfRvaAndSizes<br>NumberOfRvaAndSizes用来指定DataDirectory的数组个数，虽然结构体定义中明确指出了数组个数为16，但也有可能不是16，PE装载器需要通过这个值来识别。</li>
+<li>DataDirectory<br>最里面的套娃，数据目录，定义如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_DATA_DIRECTORY</span> &#123;</span>  </span><br><span class="line">    DWORD   VirtualAddress;  </span><br><span class="line">    DWORD   Size;  </span><br><span class="line">&#125; IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;</span><br></pre></td></tr></table></figure>
+可以看出，有地址（VirtualAddress）有大小（Size），数组定义的一定是一个区域，数组每项都有被定义的值，不同项对应不同数据结构，比如导入表，导出表等。<details>
+<summary>数据目录拓展</summary>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#define IMAGE_DIRECTORY_ENTRY_EXPORT          0   &#x2F;&#x2F; Export Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_IMPORT          1   &#x2F;&#x2F; Import Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_RESOURCE        2   &#x2F;&#x2F; Resource Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_EXCEPTION       3   &#x2F;&#x2F; Exception Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_SECURITY        4   &#x2F;&#x2F; Security Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_BASERELOC       5   &#x2F;&#x2F; Base Relocation Table</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_DEBUG           6   &#x2F;&#x2F; Debug Directory</span><br><span class="line">&#x2F;&#x2F;      IMAGE_DIRECTORY_ENTRY_COPYRIGHT       7   &#x2F;&#x2F; (X86 usage)</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_ARCHITECTURE    7   &#x2F;&#x2F; Architecture Specific Data</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_GLOBALPTR       8   &#x2F;&#x2F; RVA of GP</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_TLS             9   &#x2F;&#x2F; TLS Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG    10   &#x2F;&#x2F; Load Configuration Directory</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT   11   &#x2F;&#x2F; Bound Import Directory in headers</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_IAT            12   &#x2F;&#x2F; Import Address Table</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   &#x2F;&#x2F; Delay Load Import Descriptors</span><br><span class="line">#define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   &#x2F;&#x2F; COM Runtime descriptor</span><br></pre></td></tr></table></figure>
+</details></li>
+</ol>
+<ul>
+<li><strong>导出表</strong><br>写病毒的时候，找到系统文件的导出表，就能愉快的调用系统函数，就能愉快的为所欲为啦，数据目录的第一项记录着导出表的位置。以下为导出表格式。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_EXPORT_DIRECTORY</span> &#123;</span></span><br><span class="line">    DWORD   Characteristics;</span><br><span class="line">    DWORD   TimeDateStamp;        <span class="comment">//时间戳.  编译的时间. 把秒转为时间.可以知道这个DLL是什么时候编译出来的.</span></span><br><span class="line">    WORD    MajorVersion;</span><br><span class="line">    WORD    MinorVersion;</span><br><span class="line">    DWORD   Name;                 <span class="comment">//指向该导出表文件名的字符串,也就是这个DLL的名称  辅助信息.修改不影响</span></span><br><span class="line">    DWORD   Base; 　　　　　　　　<span class="comment">//导出函数的起始序号</span></span><br><span class="line">    DWORD   NumberOfFunctions;    <span class="comment">//所有的导出函数的个数</span></span><br><span class="line">    DWORD   NumberOfNames;        <span class="comment">//以名字导出的函数的个数</span></span><br><span class="line">    DWORD   AddressOfFunctions;   <span class="comment">//导出的函数地址的地址表RVA  也就是 函数地址表  </span></span><br><span class="line">    DWORD   AddressOfNames;       <span class="comment">//导出的函数名称表的RVA  也就是 函数名称表</span></span><br><span class="line">    DWORD   AddressOfNameOrdinals;<span class="comment">//导出函数序号表的RVA  也就是 函数序号表</span></span><br><span class="line">&#125; IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;</span><br></pre></td></tr></table></figure>
+寻找所需的函数步骤如下：<br>  1.在函数名称表中按名称寻找所需的函数是第几项<br>  2.查函数序号表中对应的项可得函数在函数地址表中的下标<br>  3.在函数地址表中通过下标找到所需的函数地址</li>
 </ul>
 </li>
 </ul>
-<ul>
-<li><p><strong>PE可选头</strong>  IMAGE_OPTIONAL_HEADER32</p>
-<details>
-<summary>成员结构</summary>WORD    Magic; //为IMAGE_OPTIONAL_HEADER32时，magic码为10B，64时，为20B
-BYTE    MajorLinkerVersion; 
-BYTE    MinorLinkerVersion; 
-DWORD   SizeOfCode; 
-DWORD   SizeOfInitializedData; 
-DWORD   SizeOfUninitializedData; 
-DWORD   AddressOfEntryPoint; 
-DWORD   BaseOfCode; 
-DWORD   BaseOfData; 
-DWORD   ImageBase; 
-DWORD   SectionAlignment; 
-DWORD   FileAlignment; 
-WORD    MajorOperatingSystemVersion; 
-WORD    MinorOperatingSystemVersion; 
-WORD    MajorImageVersion; 
-WORD    MinorImageVersion; 
-WORD    MajorSubsystemVersion; 
-WORD    MinorSubsystemVersion; 
-DWORD   Win32VersionValue; 
-DWORD   SizeOfImage; 
-DWORD   SizeOfHeaders; 
-DWORD   CheckSum; 
-WORD    Subsystem; 
-WORD    DllCharacteristics; 
-DWORD   SizeOfStackReserve; 
-DWORD   SizeOfStackCommit; 
-DWORD   SizeOfHeapReserve; 
-DWORD   SizeOfHeapCommit; 
-DWORD   LoaderFlags; 
-DWORD   NumberOfRvaAndSizes; 
-IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES]; 
-</details>
-
-<details>
-    <summary><strong>重要功能简介</strong></summary>
-    #1.Magic
-    为IMAGE_OPTIONAL_HEADER32时，magic码为10B，为IMAGE_OPTIONAL_HEADER64时，magic码为20B
-
-<pre><code>#2.AddressOfEntryPoint</code></pre><p>AddressOfEntryPoint持有EP的RVA值。该值指出程序最先执行的代码起始地址，相当重要。</p>
-<p>#3.ImageBase<br>一般来说，使用开发工具（VB/VC++/Delphi）创建好EXE文件后，其ImageBase值为00400000，DLL文件的ImageBase值为10000000（当然也可以指定其他值）。</p>
-<p>执行PE文件时，PE装载器先创建进程，再将文件载入内存，然后把EIP寄存器的值设置为ImageBase+AddressOfEntryPoint</p>
-<p>#4.SectionAlignment，FileAlignment<br>PE文件的Body部分被划分成若干节段，这些节段储存着不同类别的数据。FileAlignment指定了节段在磁盘文件中的最小单位，而SectionAlignment则指定了节区在内存中的最小单位（SectionAlignment必须大于或者等于FileAlignment）</p>
-<p>#5.SizeOfImage<br>当PE文件加载到内存时，SizeOfImage指定了PE Image在虚拟内存中所占用的空间大小，一般文件大小与加载到内存中的大小是不同的（节段头中定义了各节装载的位置与占有内存的大小，后面会讲到）</p>
-<p>#6.SizeOfHeader<br>SizeOfHeader用来指出整个PE头大小。该值必须是FileAlignment的整数倍。第一节段所在位置与SizeOfHeader距文件开始偏移的量相同。</p>
-<p>#7.Subsystem<br>Subsystem值用来区分系统驱动文件（<em>.sys)与普通可执行文件（</em>.exe，*.dll）。</p>
-<p>#8.DataDirectory<br>数据目录，定义如下：</p>
-<p>·  typedef struct _IMAGE_DATA_DIRECTORY {<br>·      DWORD   VirtualAddress;<br>·      DWORD   Size;<br>·  } IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;<br>可以看出，有地址（VirtualAddress）有大小（Size），数组定义的一定是一个区域，数组每项都有被定义的值，不同项对应不同数据结构，比如导入表，导出表等。 </p>
-<p>#9.NumberOfRvaAndSizes<br>NumberOfRvaAndSizes用来指定DataDirectory的数组个数，虽然结构体定义中明确指出了数组个数为16，但也有可能不是16，PE装载器需要通过这个值来识别。</p>
-</details>
-
-<details>
-    <summary><strong>功能简介</strong></summary>
-Magic：表示可选头的类型。<br>
-MajorLinkerVersion和MinorLinkerVersion：链接器的版本号。<br>
-SizeOfCode：代码段的长度，如果有多个代码段，则是代码段长度的总和。<br>
-SizeOfInitializedData：初始化的数据长度。<br>
-SizeOfUninitializedData：未初始化的数据长度。<br>
-AddressOfEntryPoint：程序入口的RVA，对于exe这个地址可以理解为WinMain的    RVA。对于DLL，这个地址可以理解为DllMain的RVA，如果是驱动程序，可以理解为DriverEntry的RVA。当然，实际上入口点并非是WinMain，DllMain和DriverEntry，在这些函数之前还有一系列初始化要完成，当然，这些不是本文的重点。<br>
-BaseOfCode：代码段起始地址的RVA。<br>
-BaseOfData：数据段起始地址的RVA。<br>
-ImageBase：映象（加载到内存中的PE文件）的基地址，这个基地址是建议，对于DLL来说，如果无法加载到这个地址，系统会自动为其选择地址。<br>
-SectionAlignment：节对齐，PE中的节被加载到内存时会按照这个域指定的值来对齐，比如这个值是0x1000，那么每个节的起始地址的低12位都为0。<br>
-FileAlignment：节在文件中按此值对齐，SectionAlignment必须大于或等于FileAlignment。<br>
-MajorOperatingSystemVersion、MinorOperatingSystemVersion：所需操作系统的版本号，随着操作系统版本越来越多，这个好像不是那么重要了。<br>
-MajorImageVersion、MinorImageVersion：映象的版本号，这个是开发者自己指定的，由连接器填写。<br>
-MajorSubsystemVersion、MinorSubsystemVersion：所需子系统版本号。<br>
-Win32VersionValue：保留，必须为0。<br>
-SizeOfImage：映象的大小，PE文件加载到内存中空间是连续的，这个值指定占用虚拟空间的大小。<br>
-SizeOfHeaders：所有文件头（包括节表）的大小，这个值是以FileAlignment对齐的。
-CheckSum：映象文件的校验和。<br>
-Subsystem：运行该PE文件所需的子系统。<br>
-DllCharacteristics：DLL的文件属性，只对DLL文件有效<br>
-SizeOfStackReserve：运行时为每个线程栈保留内存的大小。<br>
-SizeOfStackCommit：运行时每个线程栈初始占用内存大小。<br>
-SizeOfHeapReserve：运行时为进程堆保留内存大小。<br>
-SizeOfHeapCommit：运行时进程堆初始占用内存大小。<br>
-LoaderFlags：保留，必须为0。<br>
-NumberOfRvaAndSizes：数据目录的项数，即下面这个数组的项数。<br>
-DataDirectory：数据目录，这是一个数组。<br>
-</details>
-
+</li>
+<li><p><strong>节段头</strong><br>节段头是由IMAGE_SECTION_HEADER结构体组成的数组，每个结构体对应一个节段。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_SECTION_HEADER</span> &#123;</span></span><br><span class="line">  BYTE  Name[IMAGE_SIZEOF_SHORT_NAME];</span><br><span class="line">  <span class="keyword">union</span> &#123;</span><br><span class="line">    DWORD PhysicalAddress;</span><br><span class="line">    DWORD VirtualSize;       <span class="comment">//内存中节段所占大小</span></span><br><span class="line">  &#125; Misc;</span><br><span class="line">  DWORD VirtualAddress;      <span class="comment">//映象中节段起始地址（RVA）</span></span><br><span class="line">  DWORD SizeOfRawData;       <span class="comment">//磁盘文件中节段所占大小</span></span><br><span class="line">  DWORD PointerToRawData;    <span class="comment">//磁盘文件中节段起始位置</span></span><br><span class="line">  DWORD PointerToRelocations;</span><br><span class="line">  DWORD PointerToLinenumbers;</span><br><span class="line">  WORD  NumberOfRelocations;</span><br><span class="line">  WORD  NumberOfLinenumbers;</span><br><span class="line">  DWORD Characteristics;     <span class="comment">//节段属性（bit OR）</span></span><br><span class="line">&#125; IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;</span><br></pre></td></tr></table></figure>
+<p>VirtualAddress与PointerToRawData不带有任何值，分别由（定义在IMAGE_OPTIONAL_HEADER32中的）SectionAlignment和FileAlignment确定。</p>
+</li>
+<li><p><strong>节段</strong><br>通常文件有.data段和.code段以及其他，节段的内容是自由的，病毒代码也写在这里。</p>
 </li>
 </ul>
-<ul>
-<li><p><strong>节表</strong></p>
-<p>  节段头是由IMAGE_SECTION_HEADER结构体组成的数组，每个结构体对应一个节段。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">typedef struct _IMAGE_SECTION_HEADER &#123;</span><br><span class="line">  BYTE  Name[IMAGE_SIZEOF_SHORT_NAME];</span><br><span class="line">  union &#123;</span><br><span class="line">    DWORD PhysicalAddress;</span><br><span class="line">    DWORD VirtualSize;</span><br><span class="line">  &#125; Misc;</span><br><span class="line">  DWORD VirtualAddress;</span><br><span class="line">  DWORD SizeOfRawData;</span><br><span class="line">  DWORD PointerToRawData;</span><br><span class="line">  DWORD PointerToRelocations;</span><br><span class="line">  DWORD PointerToLinenumbers;</span><br><span class="line">  WORD  NumberOfRelocations;</span><br><span class="line">  WORD  NumberOfLinenumbers;</span><br><span class="line">  DWORD Characteristics;</span><br><span class="line">&#125; IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;</span><br></pre></td></tr></table></figure>
-
-  <details>
-      <summary> <strong>重要功能</strong></summary>
-      VirtualSize:内存中节段所占大小
-
-<pre><code>VirtualAddress：内存中节段起始地址（RVA）
-
-SizeOfRawData：磁盘文件中节段所占大小
-
-PointerToRawData：磁盘文件中节段起始位置
-
-Characteristic：节段属性（bit OR）
-
-VirtualAddress与PointerToRawData不带有任何值，分别由（定义在IMAGE_OPTIONAL_HEADER32中的）SectionAlignment和FileAlignment确定。</code></pre>  </details>
-</li>
-<li><p><strong>.idata节</strong></p>
-</li>
-<li><p><strong>.text节</strong></p>
-</li>
-<li><p><strong>.data节</strong></p>
-</li>
-</ul>
-
+<h2 id="ELF文件格式"><a href="#ELF文件格式" class="headerlink" title="ELF文件格式"></a>ELF文件格式</h2>
       
     </div>
     
@@ -552,6 +439,12 @@ VirtualAddress与PointerToRawData不带有任何值，分别由（定义在IMAGE
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%AE%89%E5%85%A8/" rel="tag"># 安全</a>
+          
+        </div>
       
 
       
@@ -658,7 +551,7 @@ VirtualAddress与PointerToRawData不带有任何值，分别由（定义在IMAGE
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-count">48</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -671,7 +564,7 @@ VirtualAddress与PointerToRawData不带有任何值，分别由（定义在IMAGE
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -727,7 +620,7 @@ VirtualAddress与PointerToRawData不带有任何值，分别由（定义在IMAGE
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PE文件简介"><span class="nav-number">1.</span> <span class="nav-text">PE文件简介</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#计算机的文件结构"><span class="nav-number">1.</span> <span class="nav-text">计算机的文件结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PE文件结构"><span class="nav-number">1.1.</span> <span class="nav-text">PE文件结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件格式"><span class="nav-number">1.2.</span> <span class="nav-text">ELF文件格式</span></a></li></ol></li></ol></div>
             
 
           </div>
